@@ -1,4 +1,6 @@
 import javax.swing.JFileChooser;
+import java.io.FileNotFoundException;
+
 public class StockAnalysis
 {
     public static void main(String[] args)
