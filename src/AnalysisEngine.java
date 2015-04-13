@@ -32,8 +32,6 @@ public class AnalysisEngine
     protected double[] highProjections;
     protected double[] lowProjections;
     protected double[] percentTotalReturn;
-    protected double[] yearHighs;
-    protected double[] yearLows;
 
     protected ArrayList<Double> allDividendsToNetProfit;
     protected ArrayList<Double> annualBookValue;
@@ -63,11 +61,15 @@ public class AnalysisEngine
     protected ArrayList<Double> revenuesPerShare;
     protected ArrayList<Double> shareEquity;
     protected ArrayList<Double> workingCapital;
+    protected ArrayList<Double> yearHighs;
+    protected ArrayList<Double> yearLows;
+
+
 
     protected double[][] fiscalEarningsPerShare;
     protected double[][] quarterlyDividends;
 
-    protected int growthPersisence;
+    protected int growthPersistence;
     protected int predictability;
     protected int priceStability;
     protected int safety;
@@ -177,8 +179,10 @@ public class AnalysisEngine
         marketCap = getMarketCap();
         companyStrength = getStrength();
         priceStability = getStats("Stability");
-        growthPersisence = getStats("Persistence");
+        growthPersistence = getStats("Persistence");
         predictability = getStats("Predictability");
+        yearHighs = getHighs();
+        yearLows = getLows();
     }
     private String getSymbol(){
         File file = new File(data + "/Symbol.txt");
@@ -1217,6 +1221,58 @@ public class AnalysisEngine
         }
         else
             return returnVal;
+    }
+    private ArrayList<Double> getHighs()
+    {
+        File file = new File(data + "/hi_lo.txt");
+        ArrayList<Double> highs = new ArrayList<Double>();
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = br.readLine();
+                Scanner sc = new Scanner(line);
+
+                while(sc.hasNextDouble()){
+                    highs.add(sc.nextDouble());
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return highs;
+        }
+        else
+            return highs;
+    }
+    private ArrayList<Double> getLows()
+    {
+        File file = new File(data + "/hi_lo.txt");
+        ArrayList<Double> lows = new ArrayList<Double>();
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line;
+                br.readLine();
+                line = br.readLine();
+                Scanner sc = new Scanner(line);
+
+                while(sc.hasNextDouble()){
+                    lows.add(sc.nextDouble());
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return lows;
+        }
+        else
+            return lows;
     }
 
     public String toString(){
