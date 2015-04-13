@@ -14,20 +14,19 @@ public class AnalysisEngine
     protected int[] institutionalSells;
     protected int[] projectionYears;
 
+    protected ArrayList<Integer> currentPositionYears;
+    protected ArrayList<Integer> accountsPayable;
+    protected ArrayList<Integer> cashAssets;
+    protected ArrayList<Integer> currentAssets;
+    protected ArrayList<Integer> currentLiability;
+    protected ArrayList<Integer> debtDue;
+    protected ArrayList<Integer> inventory;
+    protected ArrayList<Integer> receivables;
     protected ArrayList<Integer> years;
 
-    protected double[] accountsPayable;
-    protected double[] cashAssets;
-    protected double[] currentAssets;
-    protected double[] currentLiability;
-    protected double[] debtDue;
     protected double[] highProjections;
-    protected double[] inventory;
     protected double[] lowProjections;
-    protected double[] other;
-    protected double[] otherDebt;
     protected double[] percentTotalReturn;
-    protected double[] receivables;
     protected double[] yearHighs;
     protected double[] yearLows;
 
@@ -145,6 +144,15 @@ public class AnalysisEngine
         returnOnShareEquity = getDoubleValue("returnOnShareEquity");
         retainedToCommonEquity = getDoubleValue("retainedToCommonEquity");
         allDividendsToNetProfit = getDoubleValue("allDividendsToNetProfit");
+        currentPositionYears = getCurrentPosition("CURRENT POSITION");
+        cashAssets = getCurrentPosition("Cash Assets");
+        receivables = getCurrentPosition("Receivables");
+        inventory = getCurrentPosition("Inventory");
+        currentAssets = getCurrentPosition("Current Assets");
+        accountsPayable = getCurrentPosition("Payable");
+        debtDue = getCurrentPosition("Debt");
+        currentLiability = getCurrentPosition("Current Liab.");
+
     }
     private String getSymbol(){
         File file = new File(data + "/Symbol.txt");
@@ -840,6 +848,40 @@ public class AnalysisEngine
 
                 while (sc.hasNextDouble()){
                     values.add(sc.nextDouble());
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return values;
+        }
+        else
+            return values;
+    }
+    private ArrayList<Integer> getCurrentPosition(String s)
+    {
+        ArrayList<Integer> values = new ArrayList<Integer>();
+        int val = 0;
+        File file = new File(data + "/currentPosition.txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = "";
+                while (!line.contains(s)) {
+                    line = br.readLine();
+                }
+
+                Scanner sc = new Scanner(line);
+
+                while (sc.hasNextInt()){
+                    val = sc.nextInt();
+                    values.add(val);
+                }
+                if (s.compareTo("CURRENT POSITION") == 0)
+                {
+                    values.add(val + 1);
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
