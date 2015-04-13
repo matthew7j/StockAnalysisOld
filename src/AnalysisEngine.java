@@ -13,7 +13,8 @@ public class AnalysisEngine
     protected int[] institutionalHLDs;
     protected int[] institutionalSells;
     protected int[] projectionYears;
-    protected int[] years;
+
+    protected ArrayList<Integer> years;
 
     protected double[] accountsPayable;
     protected double[] cashAssets;
@@ -800,8 +801,8 @@ public class AnalysisEngine
         else
             return decisions;
     }
-    private int[] getYears(){
-        int[] years = new int[18];
+    private ArrayList<Integer> getYears(){
+        ArrayList<Integer> years = new ArrayList<Integer>();
 
         File file = new File(data + "/years.txt");
 
@@ -810,14 +811,10 @@ public class AnalysisEngine
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
 
-                int startIndex = -1;
-                for (int i = 0; i < years.length; i++)
-                {
-                    int endIndex = line.indexOf('I', startIndex + 1);
+                Scanner sc = new Scanner(line);
 
-                    years[i]  = Integer.parseInt(line.substring(startIndex, endIndex));
-
-                    startIndex = endIndex;
+                while(sc.hasNextInt()){
+                    years.add(sc.nextInt());
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -830,7 +827,7 @@ public class AnalysisEngine
             return years;
     }
     private ArrayList<Double> getDoubleValue(String fileName){
-        ArrayList<Double> vals = new ArrayList<Double>();
+        ArrayList<Double> values = new ArrayList<Double>();
 
         File file = new File(data + "/" + fileName + ".txt");
 
@@ -842,17 +839,17 @@ public class AnalysisEngine
                 Scanner sc = new Scanner(line);
 
                 while (sc.hasNextDouble()){
-                    vals.add(sc.nextDouble());
+                    values.add(sc.nextDouble());
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return vals;
+            return values;
         }
         else
-            return vals;
+            return values;
     }
 
     public String toString(){
