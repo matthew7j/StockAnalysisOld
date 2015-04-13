@@ -75,26 +75,26 @@ public class AnalysisEngine
     protected int timeliness;
 
     protected double beta;
-    protected double commonStock;
-    protected double debtDueIn5Years;
+
     protected double dividendYield;
     protected double market;
-    protected double marketCap;
     protected double medianPERatio;
     protected double PERatio;
     protected double recentPrice;
     protected double relativePERatio;
-    protected double totalDebt;
     protected double trailingPERatio;
 
-
     protected String businessInformation;
+    protected String commonStock;
     protected String companyInformation;
     protected String companyStrength;
     protected String dateSafetyChanged;
     protected String dateTechnicalChanged;
     protected String dateTimelinessChanged;
+    protected String debtDueIn5Years;
+    protected String marketCap;
     protected String symbol;
+    protected String totalDebt;
 
     protected char[] insiderDecisionRange;
 
@@ -622,6 +622,7 @@ public class AnalysisEngine
     }
     private char[] getInsiderDecisionsRange(){
         char[] range = new char[12];
+        int count = 0;
         File file = new File(data + "/Insider_Decisions.txt");
 
         if (file.exists()) {
@@ -634,8 +635,8 @@ public class AnalysisEngine
 
                 for (int i = 0; i < line.length(); i++)
                 {
-                    if (line.charAt('i') != ' ')
-                        range[i] = line.charAt('i');
+                    if (line.charAt(i) != ' ')
+                        range[count++] = line.charAt(i);
                 }
 
             } catch (FileNotFoundException e) {
@@ -755,16 +756,13 @@ public class AnalysisEngine
                 String line;
 
                 br.readLine();
+                br.readLine();
                 line = br.readLine();
 
-                for (int i = 0; i < line.length(); i++)
-                {
-                    if (Character.isDigit(line.charAt(i))){
-                        decisions[current++] = line.charAt(i);
-                    }
+                Scanner sc = new Scanner(line);
+                while (sc.hasNextInt()){
+                    decisions[current++] = sc.nextInt();
                 }
-
-
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
@@ -789,11 +787,9 @@ public class AnalysisEngine
                 br.readLine();
                 line = br.readLine();
 
-                for (int i = 0; i < line.length(); i++)
-                {
-                    if (Character.isDigit(line.charAt(i))){
-                        decisions[current++] = line.charAt(i);
-                    }
+                Scanner sc = new Scanner(line);
+                while (sc.hasNextInt()){
+                    decisions[current++] = sc.nextInt();
                 }
 
             } catch (FileNotFoundException e) {
@@ -821,11 +817,9 @@ public class AnalysisEngine
                 br.readLine();
                 line = br.readLine();
 
-                for (int i = 0; i < line.length(); i++)
-                {
-                    if (Character.isDigit(line.charAt(i))){
-                        decisions[current++] = line.charAt(i);
-                    }
+                Scanner sc = new Scanner(line);
+                while (sc.hasNextInt()){
+                    decisions[current++] = sc.nextInt();
                 }
 
             } catch (FileNotFoundException e) {
@@ -926,12 +920,12 @@ public class AnalysisEngine
     private ArrayList<Double> getAnnualRates(String s)
     {
         ArrayList<Double> values = new ArrayList<Double>();
-        File file = new File(data + "/currentPosition.txt");
+        File file = new File(data + "/AnnualRates.txt");
 
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
+                String line = br.readLine();
                 while (!line.contains(s)) {
                     line = br.readLine();
                 }
@@ -961,7 +955,7 @@ public class AnalysisEngine
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = "";
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 4; i++) {
                     line = br.readLine();
                 }
 
@@ -994,7 +988,7 @@ public class AnalysisEngine
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = "";
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 4; i++) {
                     line = br.readLine();
                 }
 
@@ -1052,7 +1046,7 @@ public class AnalysisEngine
     }
     private String getBusinessInformation()
     {
-        String file = data + "/businessInformation.txt";
+        String file = data + "/CompanyBusiness.txt";
         String result = "";
         try {
             result = Files.lines(Paths.get(file)).collect(Collectors.joining());
@@ -1076,61 +1070,65 @@ public class AnalysisEngine
         }
         return result;
     }
-    private int getTotalDebt()
+    private String getTotalDebt()
     {
         File file = new File(data + "/capitalStructure.txt");
-        int returnVal = 0;
+        String returnVal = "0";
 
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = "";
-                for (int i = 0; i < 2; i++){
+                while (!line.contains("Total Debt"))
+                {
                     line = br.readLine();
                 }
-                Scanner sc = new Scanner(line);
-                returnVal = sc.nextInt();
+
+                int start = line.indexOf('$');
+                int end = line.indexOf(' ', start + 1);
+                end = line.indexOf(' ', end + 1);
+
+                returnVal = line.substring(start, end);
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return returnVal;
         }
-        else
-            return 0;
+        return returnVal;
     }
-    private int getDebtDueIn5Years()
-    {
+    private String getDebtDueIn5Years() {
         File file = new File(data + "/capitalStructure.txt");
-        int returnVal = 0;
+        String returnVal = "0";
 
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = "";
-                for (int i = 0; i < 2; i++){
+                while (!line.contains("Total Debt")) {
                     line = br.readLine();
                 }
-                Scanner sc = new Scanner(line);
-                sc.nextInt();
-                sc.nextInt();
-                returnVal = sc.nextInt();
+
+                int start = line.indexOf('$');
+                start = line.indexOf('$', start + 1);
+                int end = line.indexOf(' ', start);
+                end = line.indexOf(' ', end);
+
+                returnVal = line.substring(start, end);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return returnVal;
         }
-        else
-            return 0;
+        return returnVal;
     }
 
-    private int getCommonStock()
+    private String getCommonStock()
     {
         File file = new File(data + "/capitalStructure.txt");
-        int returnVal = 0;
+        String returnVal = "0";
 
         if (file.exists()) {
             try {
@@ -1139,22 +1137,25 @@ public class AnalysisEngine
                 while (!line.contains("Common Stock")){
                     line = br.readLine();
                 }
-                Scanner sc = new Scanner(line);
-                returnVal = sc.nextInt();
+
+                int start = line.indexOf(' ');
+                start = line.indexOf(' ', start + 1);
+                int end = line.indexOf(' ', start + 1);
+
+                returnVal = line.substring(start, end);
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return returnVal;
         }
-        else
-            return 0;
+        return returnVal;
     }
-    private int getMarketCap()
+    private String getMarketCap()
     {
         File file = new File(data + "/capitalStructure.txt");
-        int returnVal = 0;
+        String returnVal = "0";
 
         if (file.exists()) {
             try {
@@ -1163,18 +1164,17 @@ public class AnalysisEngine
                 while (!line.contains("MARKET CAP")){
                     line = br.readLine();
                 }
-                int start = line.indexOf('$');
-                int end = line.indexOf('(');
-                returnVal = Integer.parseInt(line.substring(start + 1, end - 1));
+                int start = line.indexOf(':') + 1;
+
+                int end = line.indexOf(' ', start + 1);
+                returnVal = line.substring(start, end);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return returnVal;
         }
-        else
-            return 0;
+        return returnVal;
     }
     private int getStats(String s)
     {
@@ -1189,7 +1189,13 @@ public class AnalysisEngine
                     line = br.readLine();
                 }
                 Scanner sc = new Scanner(line);
-                returnVal = sc.nextInt();
+
+                while (sc.hasNext()) {
+                    if (sc.hasNextInt())
+                        returnVal = sc.nextInt();
+                    else
+                        sc.next();
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
@@ -1290,12 +1296,14 @@ public class AnalysisEngine
                 {
                     sc = new Scanner(line);
                     for (int j = 0; j < 2; j++){
-                        vals[i][j] = sc.nextDouble();
+                        while(sc.hasNext()) {
+                            if (sc.hasNextDouble())
+                                vals[i][j] = sc.nextDouble();
+                            else
+                                sc.next();
+                        }
                     }
                 }
-
-
-
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
