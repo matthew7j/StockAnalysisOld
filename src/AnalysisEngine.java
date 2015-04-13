@@ -31,7 +31,6 @@ public class AnalysisEngine
 
     protected double[] highProjections;
     protected double[] lowProjections;
-    protected double[] percentTotalReturn;
 
     protected ArrayList<Double> allDividendsToNetProfit;
     protected ArrayList<Double> annualBookValue;
@@ -64,10 +63,9 @@ public class AnalysisEngine
     protected ArrayList<Double> yearHighs;
     protected ArrayList<Double> yearLows;
 
-
-
     protected double[][] fiscalEarningsPerShare;
     protected double[][] quarterlyDividends;
+    protected double[][] percentTotalReturn;
 
     protected int growthPersistence;
     protected int predictability;
@@ -183,6 +181,7 @@ public class AnalysisEngine
         predictability = getStats("Predictability");
         yearHighs = getHighs();
         yearLows = getLows();
+        percentTotalReturn = getPercentTotalReturn();
     }
     private String getSymbol(){
         File file = new File(data + "/Symbol.txt");
@@ -497,7 +496,7 @@ public class AnalysisEngine
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                int indexStart = 0, indexNext = 0;
+                int indexStart = 0, indexNext;
                 String line = br.readLine();
 
                 while (!line.contains("High")){
@@ -541,7 +540,7 @@ public class AnalysisEngine
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                int indexStart = 0, indexNext = 0;
+                int indexStart = 0, indexNext;
                 String line = br.readLine();
 
                 while (!line.contains("Low")){
@@ -1273,6 +1272,40 @@ public class AnalysisEngine
         }
         else
             return lows;
+    }
+    private double[][] getPercentTotalReturn()
+    {
+        File file = new File(data + "/percentTotalReturn.txt");
+        double[][] vals = new double[3][2];
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = "";
+                for (int i = 0; i < 4; i++) {
+                    line = br.readLine();
+                }
+                Scanner sc;
+                for (int i = 0; i < 3; i++)
+                {
+                    sc = new Scanner(line);
+                    for (int j = 0; j < 2; j++){
+                        vals[i][j] = sc.nextDouble();
+                    }
+                }
+
+
+
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return vals;
+        }
+        else
+            return vals;
     }
 
     public String toString(){
