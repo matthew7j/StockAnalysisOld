@@ -3,7 +3,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class AnalysisEngine
@@ -91,6 +90,7 @@ public class AnalysisEngine
 
     protected String businessInformation;
     protected String companyInformation;
+    protected String companyStrength;
     protected String dateSafetyChanged;
     protected String dateTechnicalChanged;
     protected String dateTimelinessChanged;
@@ -171,6 +171,14 @@ public class AnalysisEngine
         quarterlyDividends = getQuarterlyDividendsPaid();
         businessInformation = getBusinessInformation();
         companyInformation = getCompanyInformation();
+        totalDebt = getTotalDebt();
+        debtDueIn5Years = getDebtDueIn5Years();
+        commonStock = getCommonStock();
+        marketCap = getMarketCap();
+        companyStrength = getStrength();
+        priceStability = getStats("Stability");
+        growthPersisence = getStats("Persistence");
+        predictability = getStats("Predictability");
     }
     private String getSymbol(){
         File file = new File(data + "/Symbol.txt");
@@ -1064,6 +1072,151 @@ public class AnalysisEngine
             e2.printStackTrace();
         }
         return result;
+    }
+    private int getTotalDebt()
+    {
+        File file = new File(data + "/capitalStructure.txt");
+        int returnVal = 0;
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = "";
+                for (int i = 0; i < 2; i++){
+                    line = br.readLine();
+                }
+                Scanner sc = new Scanner(line);
+                returnVal = sc.nextInt();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return returnVal;
+        }
+        else
+            return 0;
+    }
+    private int getDebtDueIn5Years()
+    {
+        File file = new File(data + "/capitalStructure.txt");
+        int returnVal = 0;
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = "";
+                for (int i = 0; i < 2; i++){
+                    line = br.readLine();
+                }
+                Scanner sc = new Scanner(line);
+                sc.nextInt();
+                sc.nextInt();
+                returnVal = sc.nextInt();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return returnVal;
+        }
+        else
+            return 0;
+    }
+
+    private int getCommonStock()
+    {
+        File file = new File(data + "/capitalStructure.txt");
+        int returnVal = 0;
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = "";
+                while (!line.contains("Common Stock")){
+                    line = br.readLine();
+                }
+                Scanner sc = new Scanner(line);
+                returnVal = sc.nextInt();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return returnVal;
+        }
+        else
+            return 0;
+    }
+    private int getMarketCap()
+    {
+        File file = new File(data + "/capitalStructure.txt");
+        int returnVal = 0;
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = "";
+                while (!line.contains("MARKET CAP")){
+                    line = br.readLine();
+                }
+                int start = line.indexOf('$');
+                int end = line.indexOf('(');
+                returnVal = Integer.parseInt(line.substring(start + 1, end - 1));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return returnVal;
+        }
+        else
+            return 0;
+    }
+    private int getStats(String s)
+    {
+        File file = new File(data + "/companyStats.txt");
+        int returnVal = 0;
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = "";
+                while (!line.contains(s)){
+                    line = br.readLine();
+                }
+                Scanner sc = new Scanner(line);
+                returnVal = sc.nextInt();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return returnVal;
+        }
+        else
+            return 0;
+    }
+
+    private String getStrength()
+    {
+        File file = new File(data + "/companyStats.txt");
+        String returnVal = "";
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = br.readLine();
+                returnVal = line.substring(line.lastIndexOf(' '), line.length() - 1);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return returnVal;
+        }
+        else
+            return returnVal;
     }
 
     public String toString(){
