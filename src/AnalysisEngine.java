@@ -1,8 +1,11 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class AnalysisEngine
 {
     protected String data;
+
     protected int[] insiderBuys;
     protected int[] insiderOptions;
     protected int[] insiderSells;
@@ -13,40 +16,43 @@ public class AnalysisEngine
     protected int[] years;
 
     protected double[] accountsPayable;
-    protected double[] allDividendsToNetProfit;
-    protected double[] averageAnnualDividendYield;
-    protected double[] averageAnnualPERatio;
-    protected double[] bookValuePerShare;
-    protected double[] capitalSpendingPerShare;
     protected double[] cashAssets;
-    protected double[] cashFlowPerShare;
-    protected double[] commonSharesOutstanding;
     protected double[] currentAssets;
     protected double[] currentLiability;
     protected double[] debtDue;
-    protected double[] dividendsDeclaredPerShare;
-    protected double[] earningsPerShare;
     protected double[] highProjections;
-    protected double[] incomeTaxRate;
     protected double[] inventory;
-    protected double[] longTermDebt;
     protected double[] lowProjections;
-    protected double[] netProfit;
-    protected double[] netProfitMargin;
-    protected double[] operatingMargin;
     protected double[] other;
     protected double[] otherDebt;
     protected double[] percentTotalReturn;
     protected double[] receivables;
-    protected double[] relativePERatios;
-    protected double[] retainedToCommonEquity;
-    protected double[] returnOnShareEquity;
-    protected double[] returnOnTotalCapital;
-    protected double[] revenues;
-    protected double[] revenuesPerShare;
-    protected double[] shareEquity;
     protected double[] yearHighs;
     protected double[] yearLows;
+
+    protected ArrayList<Double> allDividendsToNetProfit;
+    protected ArrayList<Double> averageAnnualDividendYield;
+    protected ArrayList<Double> averageAnnualPERatio;
+    protected ArrayList<Double> bookValuePerShare;
+    protected ArrayList<Double> capitalSpendingPerShare;
+    protected ArrayList<Double> cashFlowPerShare;
+    protected ArrayList<Double> commonSharesOutstanding;
+    protected ArrayList<Double> depreciation;
+    protected ArrayList<Double> dividendsDeclaredPerShare;
+    protected ArrayList<Double> earningsPerShare;
+    protected ArrayList<Double> incomeTaxRate;
+    protected ArrayList<Double> longTermDebt;
+    protected ArrayList<Double> netProfit;
+    protected ArrayList<Double> netProfitMargin;
+    protected ArrayList<Double> operatingMargin;
+    protected ArrayList<Double> relativePERatios;
+    protected ArrayList<Double> retainedToCommonEquity;
+    protected ArrayList<Double> returnOnShareEquity;
+    protected ArrayList<Double> returnOnTotalCapital;
+    protected ArrayList<Double> revenues;
+    protected ArrayList<Double> revenuesPerShare;
+    protected ArrayList<Double> shareEquity;
+    protected ArrayList<Double> workingCapital;
 
     protected double[][] fiscalEarningsPerShare;
     protected double[][] fiscalQuarterlyRevenues;
@@ -72,7 +78,7 @@ public class AnalysisEngine
     protected double relativePERatio;
     protected double totalDebt;
     protected double trailingPERatio;
-    protected double workingCapital;
+
 
     protected String businessInformation;
     protected String companyInformation;
@@ -80,6 +86,8 @@ public class AnalysisEngine
     protected String dateTechnicalChanged;
     protected String dateTimelinessChanged;
     protected String symbol;
+
+    protected char[] insiderDecisionRange;
 
     public AnalysisEngine(String data){
         this.data = data;
@@ -105,9 +113,37 @@ public class AnalysisEngine
         highProjections = getHighProjections();
         lowProjections = getLowProjections();
         projectionYears = getProjectionYears();
+        insiderDecisionRange = getInsiderDecisionsRange();
         insiderBuys = getInsiderBuyDecisions();
         insiderOptions = getInsiderOptionsDecisions();
         insiderSells = getInsiderSellDecisions();
+        institutionalBuys = getInstitutionalBuys();
+        institutionalSells = getInstitutionalSells();
+        institutionalHLDs = getInstitutionalHLDs();
+        years = getYears();
+        revenuesPerShare = getDoubleValue("revenuesPerShare");
+        cashFlowPerShare = getDoubleValue("cashFlowPerShare");
+        earningsPerShare = getDoubleValue("earningsPerShare");
+        dividendsDeclaredPerShare = getDoubleValue("dividendsDeclaredPerShare");
+        capitalSpendingPerShare = getDoubleValue("capitalSpendingPerShare");
+        bookValuePerShare = getDoubleValue("bookValuePerShare");
+        commonSharesOutstanding = getDoubleValue("commonSharesOutstanding");
+        averageAnnualPERatio = getDoubleValue("averageAnnualPERatio");
+        relativePERatios = getDoubleValue("relativePERatios");
+        averageAnnualDividendYield = getDoubleValue("averageAnnualDividendYield");
+        revenues = getDoubleValue("revenues");
+        operatingMargin = getDoubleValue("operatingMargin");
+        depreciation = getDoubleValue("depreciation");
+        netProfit = getDoubleValue("netProfit");
+        incomeTaxRate = getDoubleValue("incomeTaxRate");
+        netProfitMargin = getDoubleValue("netProfitMargin");
+        workingCapital = getDoubleValue("workingCapital");
+        longTermDebt = getDoubleValue("longTermDebt");
+        shareEquity = getDoubleValue("shareEquity");
+        returnOnTotalCapital = getDoubleValue("returnOnTotalCapital");
+        returnOnShareEquity = getDoubleValue("returnOnShareEquity");
+        retainedToCommonEquity = getDoubleValue("retainedToCommonEquity");
+        allDividendsToNetProfit = getDoubleValue("allDividendsToNetProfit");
     }
     private String getSymbol(){
         File file = new File(data + "/Symbol.txt");
@@ -546,6 +582,34 @@ public class AnalysisEngine
         else
             return years;
     }
+    private char[] getInsiderDecisionsRange(){
+        char[] range = new char[12];
+        File file = new File(data + "/Insider_Decisions.txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line;
+
+                br.readLine();
+                line = br.readLine();
+
+                for (int i = 0; i < line.length(); i++)
+                {
+                    if (line.charAt('i') != ' ')
+                        range[i] = line.charAt('i');
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return range;
+        }
+        else
+            return range;
+    }
     private int[] getInsiderBuyDecisions(){
         int[] decisions = new int[12];
         int current = 0;
@@ -641,6 +705,154 @@ public class AnalysisEngine
         }
         else
             return decisions;
+    }
+    private int[] getInstitutionalBuys(){
+        int[] decisions = new int[3];
+        int current = 0;
+        File file = new File(data + "/Institutional_Decisions.txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line;
+
+                br.readLine();
+                line = br.readLine();
+
+                for (int i = 0; i < line.length(); i++)
+                {
+                    if (Character.isDigit(line.charAt(i))){
+                        decisions[current++] = line.charAt(i);
+                    }
+                }
+
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return decisions;
+        }
+        else
+            return decisions;
+    }
+    private int[] getInstitutionalSells(){
+        int[] decisions = new int[3];
+        int current = 0;
+        File file = new File(data + "/Institutional_Decisions.txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line;
+
+                br.readLine();
+                br.readLine();
+                line = br.readLine();
+
+                for (int i = 0; i < line.length(); i++)
+                {
+                    if (Character.isDigit(line.charAt(i))){
+                        decisions[current++] = line.charAt(i);
+                    }
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return decisions;
+        }
+        else
+            return decisions;
+    }
+    private int[] getInstitutionalHLDs(){
+        int[] decisions = new int[3];
+        int current = 0;
+        File file = new File(data + "/Institutional_Decisions.txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line;
+
+                br.readLine();
+                br.readLine();
+                br.readLine();
+                line = br.readLine();
+
+                for (int i = 0; i < line.length(); i++)
+                {
+                    if (Character.isDigit(line.charAt(i))){
+                        decisions[current++] = line.charAt(i);
+                    }
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return decisions;
+        }
+        else
+            return decisions;
+    }
+    private int[] getYears(){
+        int[] years = new int[18];
+
+        File file = new File(data + "/years.txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = br.readLine();
+
+                int startIndex = -1;
+                for (int i = 0; i < years.length; i++)
+                {
+                    int endIndex = line.indexOf('I', startIndex + 1);
+
+                    years[i]  = Integer.parseInt(line.substring(startIndex, endIndex));
+
+                    startIndex = endIndex;
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return years;
+        }
+        else
+            return years;
+    }
+    private ArrayList<Double> getDoubleValue(String fileName){
+        ArrayList<Double> vals = new ArrayList<Double>();
+
+        File file = new File(data + "/" + fileName + ".txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = br.readLine();
+
+                Scanner sc = new Scanner(line);
+
+                while (sc.hasNextDouble()){
+                    vals.add(sc.nextDouble());
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return vals;
+        }
+        else
+            return vals;
     }
 
     public String toString(){
