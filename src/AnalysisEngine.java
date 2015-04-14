@@ -137,9 +137,9 @@ public class AnalysisEngine
         capitalSpendingPerShare = getDoubleValue("capitalSpendingPerShare");
         bookValuePerShare = getDoubleValue("bookValuePerShare");
         commonSharesOutstanding = getDoubleValue("commonSharesOutstanding");
-        averageAnnualPERatio = getDoubleValue("averageAnnualPERatio");
-        relativePERatios = getDoubleValue("relativePERatios");
-        averageAnnualDividendYield = getDoubleValue("averageAnnualDividendYield");
+        averageAnnualPERatio = getDoubleValue("AverageAnnualPE_Ratio");
+        relativePERatios = getDoubleValue("RelativePERatio");
+        averageAnnualDividendYield = getDoubleValue("AverageAnnualDividendYield");
         revenues = getDoubleValue("revenues");
         operatingMargin = getDoubleValue("operatingMargin");
         depreciation = getDoubleValue("depreciation");
@@ -250,6 +250,7 @@ public class AnalysisEngine
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
+                line = line.replaceAll(",", ".");
                 trailingPERatio = Double.parseDouble(line);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -270,6 +271,7 @@ public class AnalysisEngine
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 br.readLine();
                 String line = br.readLine();
+                line = line.replaceAll(",", ".");
                 medianPERatio = Double.parseDouble(line);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -829,7 +831,7 @@ public class AnalysisEngine
     private ArrayList<Integer> getYears(){
         ArrayList<Integer> years = new ArrayList<Integer>();
 
-        File file = new File(data + "/years.txt");
+        File file = new File(data + "/DataYears.txt");
 
         if (file.exists()) {
             try {
@@ -838,22 +840,32 @@ public class AnalysisEngine
 
                 Scanner sc = new Scanner(line);
 
-                while(sc.hasNextInt()){
-                    years.add(sc.nextInt());
+                while(sc.hasNext()){
+                    if (sc.hasNextInt()) {
+                        int year = sc.nextInt();
+
+                        if (year > 9999){
+                            int test = year / 1000;
+                            if (test == 12 || test == 11){
+                                year = Integer.parseInt(Integer.toString(year).substring(1));
+                            }
+                        }
+                        if (year != 1)
+                            years.add(year);
+                    }
+                    else
+                        sc.next();
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return years;
         }
-        else
-            return years;
+        return years;
     }
     private ArrayList<Double> getDoubleValue(String fileName){
         ArrayList<Double> values = new ArrayList<Double>();
-
         File file = new File(data + "/" + fileName + ".txt");
 
         if (file.exists()) {
@@ -863,8 +875,16 @@ public class AnalysisEngine
 
                 Scanner sc = new Scanner(line);
 
-                while (sc.hasNextDouble()){
-                    values.add(sc.nextDouble());
+                while (sc.hasNext()){
+                    if (sc.hasNextDouble())
+                        values.add(sc.nextDouble());
+
+                    else {
+                        String s = sc.next();
+                        if (s.contains("%") && s.length() > 1){
+                            values.add(Double.parseDouble(s.substring(0, s.indexOf('%'))));
+                        }
+                    }
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -955,6 +975,7 @@ public class AnalysisEngine
 
                 for (int i = 0; i < 5; i++)
                 {
+                    line = line.replace(".", " ");
                     Scanner sc = new Scanner(line);
                     for (int j = 0; j < 5; j++)
                     {
@@ -974,7 +995,8 @@ public class AnalysisEngine
     }
     private double[][] getEarningsPerShare()
     {
-        double[][] values = new double[5][5];
+        double[][] values = new double[5][6];
+        int j = 0;
 
         File file = new File(data + "/quarterlyEarningsPerShare.txt");
 
@@ -989,10 +1011,15 @@ public class AnalysisEngine
                 for (int i = 0; i < 5; i++)
                 {
                     Scanner sc = new Scanner(line);
-                    for (int j = 0; j < 5; j++)
-                    {
-                        values[i][j] = sc.nextDouble();
+                    while(sc.hasNext()){
+                        if (sc.hasNextDouble()){
+                            values[i][j++] = sc.nextDouble();
+                        }
+                        else {
+                            sc.next();
+                        }
                     }
+                    j = 0;
                     line = br.readLine();
                 }
             } catch (FileNotFoundException e) {
@@ -1053,7 +1080,7 @@ public class AnalysisEngine
     }
     private String getCompanyInformation()
     {
-        String file = data + "/companyInformation.txt";
+        String file = data + "/CompanyInformation.txt";
         String result = "";
         try {
             result = Files.lines(Paths.get(file)).collect(Collectors.joining());
@@ -1359,8 +1386,100 @@ public class AnalysisEngine
         for (int i = 0; i < years.size(); i++){
             string += years.get(i) + " ";
         }
-        string += "\n\n";
+        string += "\n";
 
+        for (int i = 0; i < revenuesPerShare.size(); i++){
+            string += revenuesPerShare.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < cashFlowPerShare.size(); i++){
+            string += cashFlowPerShare.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < earningsPerShare.size(); i++){
+            string += earningsPerShare.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < dividendsDeclaredPerShare.size(); i++){
+            string += dividendsDeclaredPerShare.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < capitalSpendingPerShare.size(); i++){
+            string += capitalSpendingPerShare.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < bookValuePerShare.size(); i++){
+            string += bookValuePerShare.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < commonSharesOutstanding.size(); i++){
+            string += commonSharesOutstanding.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < averageAnnualPERatio.size(); i++){
+            string += averageAnnualPERatio.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < relativePERatios.size(); i++){
+            string += relativePERatios.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < averageAnnualDividendYield.size(); i++){
+            string += averageAnnualDividendYield.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < revenues.size(); i++){
+            string += revenues.get(i) + " ";
+        }
+        string += "\n";
 
         return string;
     }
