@@ -876,9 +876,13 @@ public class AnalysisEngine
                 Scanner sc = new Scanner(line);
 
                 while (sc.hasNext()){
-                    if (sc.hasNextDouble())
-                        values.add(sc.nextDouble());
+                    if (sc.hasNextDouble()) {
+                        String d = sc.next();
 
+                        if (d.compareTo("1") != 0){
+                            values.add(Double.parseDouble(d));
+                        }
+                    }
                     else {
                         String s = sc.next();
                         if (s.contains("%") && s.length() > 1){
@@ -1432,52 +1436,52 @@ public class AnalysisEngine
             string += revenues.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < operatingMargin.size(); i++){
+            string += operatingMargin.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < depreciation.size(); i++){
+            string += depreciation.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < netProfit.size(); i++){
+            string += netProfit.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < incomeTaxRate.size(); i++){
+            string += incomeTaxRate.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < netProfitMargin.size(); i++){
+            string += netProfitMargin.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < workingCapital.size(); i++){
+            string += workingCapital.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < longTermDebt.size(); i++){
+            string += longTermDebt.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < shareEquity.size(); i++){
+            string += shareEquity.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < returnOnTotalCapital.size(); i++){
+            string += returnOnTotalCapital.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < returnOnShareEquity.size(); i++){
+            string += returnOnShareEquity.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < retainedToCommonEquity.size(); i++){
+            string += retainedToCommonEquity.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < revenues.size(); i++){
-            string += revenues.get(i) + " ";
+        for (int i = 0; i < allDividendsToNetProfit.size(); i++){
+            string += allDividendsToNetProfit.get(i) + " ";
         }
         string += "\n";
 
