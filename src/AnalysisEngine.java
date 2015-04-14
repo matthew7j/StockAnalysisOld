@@ -9,12 +9,6 @@ public class AnalysisEngine
 {
     protected String data;
 
-    protected int[] insiderBuys;
-    protected int[] insiderOptions;
-    protected int[] insiderSells;
-    protected int[] institutionalBuys;
-    protected int[] institutionalHLDs;
-    protected int[] institutionalSells;
     protected int[] projectionYears;
 
     protected int[][] fiscalQuarterlyRevenues;
@@ -63,6 +57,13 @@ public class AnalysisEngine
     protected ArrayList<Double> yearHighs;
     protected ArrayList<Double> yearLows;
 
+    protected ArrayList<Integer> insiderBuys;
+    protected ArrayList<Integer> insiderOptions;
+    protected ArrayList<Integer> insiderSells;
+    protected ArrayList<Integer> institutionalBuys;
+    protected ArrayList<Integer> institutionalHLDs;
+    protected ArrayList<Integer> institutionalSells;
+
     protected double[][] fiscalEarningsPerShare;
     protected double[][] quarterlyDividends;
     protected double[][] percentTotalReturn;
@@ -92,11 +93,10 @@ public class AnalysisEngine
     protected String dateTechnicalChanged;
     protected String dateTimelinessChanged;
     protected String debtDueIn5Years;
+    protected String insiderDecisionRange;
     protected String marketCap;
     protected String symbol;
     protected String totalDebt;
-
-    protected char[] insiderDecisionRange;
 
     public AnalysisEngine(String data){
         this.data = data;
@@ -620,10 +620,10 @@ public class AnalysisEngine
         else
             return years;
     }
-    private char[] getInsiderDecisionsRange(){
-        char[] range = new char[12];
-        int count = 0;
+    private String getInsiderDecisionsRange(){
+
         File file = new File(data + "/Insider_Decisions.txt");
+        String returnString = " ";
 
         if (file.exists()) {
             try {
@@ -633,25 +633,20 @@ public class AnalysisEngine
                 br.readLine();
                 line = br.readLine();
 
-                for (int i = 0; i < line.length(); i++)
-                {
-                    if (line.charAt(i) != ' ')
-                        range[count++] = line.charAt(i);
-                }
+                returnString = line.trim();
+                returnString = returnString.replaceAll("\t", "");
+                returnString = returnString.replaceAll(" ", "");
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return range;
         }
-        else
-            return range;
+        return returnString;
     }
-    private int[] getInsiderBuyDecisions(){
-        int[] decisions = new int[12];
-        int current = 0;
+    private ArrayList<Integer> getInsiderBuyDecisions(){
+        ArrayList<Integer> decisions = new ArrayList<Integer>();
         File file = new File(data + "/Insider_Decisions.txt");
 
         if (file.exists()) {
@@ -659,14 +654,16 @@ public class AnalysisEngine
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = "";
 
-                for (int i = 0; i < 3; i++){
+                while (!line.contains("Buy")){
                     line = br.readLine();
                 }
-
-                for (int i = 0; i < line.length(); i++)
-                {
-                    if (Character.isDigit(line.charAt(i))){
-                        decisions[current++] = line.charAt(i);
+                Scanner sc = new Scanner(line);
+                while (sc.hasNext()){
+                    if (sc.hasNextInt()){
+                        decisions.add(sc.nextInt());
+                    }
+                    else{
+                        sc.next();
                     }
                 }
 
@@ -675,14 +672,11 @@ public class AnalysisEngine
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return decisions;
         }
-        else
-            return decisions;
+        return decisions;
     }
-    private int[] getInsiderOptionsDecisions(){
-        int[] decisions = new int[12];
-        int current = 0;
+    private ArrayList<Integer> getInsiderOptionsDecisions(){
+        ArrayList<Integer> decisions = new ArrayList<Integer>();
         File file = new File(data + "/Insider_Decisions.txt");
 
         if (file.exists()) {
@@ -690,14 +684,16 @@ public class AnalysisEngine
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = "";
 
-                for (int i = 0; i < 4; i++){
+                while (!line.contains("Options")){
                     line = br.readLine();
                 }
-
-                for (int i = 0; i < line.length(); i++)
-                {
-                    if (Character.isDigit(line.charAt(i))){
-                        decisions[current++] = line.charAt(i);
+                Scanner sc = new Scanner(line);
+                while (sc.hasNext()){
+                    if (sc.hasNextInt()){
+                        decisions.add(sc.nextInt());
+                    }
+                    else{
+                        sc.next();
                     }
                 }
 
@@ -707,15 +703,11 @@ public class AnalysisEngine
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return decisions;
-
         }
-        else
-            return decisions;
+        return decisions;
     }
-    private int[] getInsiderSellDecisions(){
-        int[] decisions = new int[12];
-        int current = 0;
+    private ArrayList<Integer> getInsiderSellDecisions(){
+        ArrayList<Integer> decisions = new ArrayList<Integer>();
         File file = new File(data + "/Insider_Decisions.txt");
 
         if (file.exists()) {
@@ -723,73 +715,47 @@ public class AnalysisEngine
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = "";
 
-                for (int i = 0; i < 5; i++){
+                while (!line.contains("Sell")){
                     line = br.readLine();
                 }
-
-                for (int i = 0; i < line.length(); i++)
-                {
-                    if (Character.isDigit(line.charAt(i))){
-                        decisions[current++] = line.charAt(i);
+                Scanner sc = new Scanner(line);
+                while (sc.hasNext()){
+                    if (sc.hasNextInt()){
+                        decisions.add(sc.nextInt());
+                    }
+                    else{
+                        sc.next();
                     }
                 }
 
-
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return decisions;
         }
-        else
-            return decisions;
+        return decisions;
     }
-    private int[] getInstitutionalBuys(){
-        int[] decisions = new int[3];
-        int current = 0;
+    private ArrayList<Integer> getInstitutionalBuys(){
+        ArrayList<Integer> decisions = new ArrayList<Integer>();
         File file = new File(data + "/Institutional_Decisions.txt");
 
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line;
+                String line = "";
 
-                br.readLine();
-                br.readLine();
-                line = br.readLine();
-
-                Scanner sc = new Scanner(line);
-                while (sc.hasNextInt()){
-                    decisions[current++] = sc.nextInt();
+                while (!line.contains("Buy")){
+                    line = br.readLine();
                 }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return decisions;
-        }
-        else
-            return decisions;
-    }
-    private int[] getInstitutionalSells(){
-        int[] decisions = new int[3];
-        int current = 0;
-        File file = new File(data + "/Institutional_Decisions.txt");
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line;
-
-                br.readLine();
-                br.readLine();
-                line = br.readLine();
-
                 Scanner sc = new Scanner(line);
-                while (sc.hasNextInt()){
-                    decisions[current++] = sc.nextInt();
+                while (sc.hasNext()){
+                    if (sc.hasNextInt()){
+                        decisions.add(sc.nextInt());
+                    }
+                    else{
+                        sc.next();
+                    }
                 }
 
             } catch (FileNotFoundException e) {
@@ -797,29 +763,29 @@ public class AnalysisEngine
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return decisions;
         }
-        else
-            return decisions;
+        return decisions;
     }
-    private int[] getInstitutionalHLDs(){
-        int[] decisions = new int[3];
-        int current = 0;
+    private ArrayList<Integer> getInstitutionalSells(){
+        ArrayList<Integer> decisions = new ArrayList<Integer>();
         File file = new File(data + "/Institutional_Decisions.txt");
 
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line;
+                String line = "";
 
-                br.readLine();
-                br.readLine();
-                br.readLine();
-                line = br.readLine();
-
+                while (!line.contains("Sell")){
+                    line = br.readLine();
+                }
                 Scanner sc = new Scanner(line);
-                while (sc.hasNextInt()){
-                    decisions[current++] = sc.nextInt();
+                while (sc.hasNext()){
+                    if (sc.hasNextInt()){
+                        decisions.add(sc.nextInt());
+                    }
+                    else{
+                        sc.next();
+                    }
                 }
 
             } catch (FileNotFoundException e) {
@@ -827,10 +793,38 @@ public class AnalysisEngine
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-            return decisions;
         }
-        else
-            return decisions;
+        return decisions;
+    }
+    private ArrayList<Integer> getInstitutionalHLDs(){
+        ArrayList<Integer> decisions = new ArrayList<Integer>();
+        File file = new File(data + "/Institutional_Decisions.txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = "";
+
+                while (!line.contains("Hld's")){
+                    line = br.readLine();
+                }
+                Scanner sc = new Scanner(line);
+                while (sc.hasNext()){
+                    if (sc.hasNextInt()){
+                        decisions.add(sc.nextInt());
+                    }
+                    else{
+                        sc.next();
+                    }
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+        }
+        return decisions;
     }
     private ArrayList<Integer> getYears(){
         ArrayList<Integer> years = new ArrayList<Integer>();
@@ -1330,6 +1324,43 @@ public class AnalysisEngine
                         projectionYears[0] + " - " + projectionYears[1] +
                         "\n\tHigh: " + highProjections[0] + "\t" + highProjections[1] + " \t" + highProjections[2] + " \n" +
                         "\tLow: " + lowProjections[0] + " \t" + lowProjections[1] + " \t" + lowProjections[2] + " \n";
+        string += "Insider Decisions: \n";
+        for (int i = 0; i < insiderDecisionRange.length(); i++){
+            string += insiderDecisionRange.charAt(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < insiderBuys.size(); i++){
+            string += insiderBuys.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < insiderOptions.size(); i++){
+            string += insiderOptions.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < insiderSells.size(); i++){
+            string += insiderSells.get(i) + " ";
+        }
+        string += "\n\n";
+
+        string += "Institutional Decisions: \n";
+        for (int i = 0; i < institutionalBuys.size(); i++){
+            string += institutionalBuys.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < institutionalSells.size(); i++){
+            string += institutionalSells.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < institutionalHLDs.size(); i++){
+            string += institutionalHLDs.get(i) + " ";
+        }
+        string += "\n\n";
+
+        for (int i = 0; i < years.size(); i++){
+            string += years.get(i) + " ";
+        }
+        string += "\n\n";
+
 
         return string;
     }
