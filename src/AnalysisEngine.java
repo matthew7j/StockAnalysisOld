@@ -107,18 +107,9 @@ public class AnalysisEngine
         symbol = getSymbol();
         recentPrice = getRecentPrice();
         PERatio = getPERatio();
-        trailingPERatio = getTrailingPERatio();
-        medianPERatio = getMedianPERatio();
-        relativePERatio = getRelativePERatio();
         dividendYield = getDividendYield();
         timeliness = getTimeliness();
-        dateTimelinessChanged = getTimelinessInformation();
         safety = getSafety();
-        dateSafetyChanged = getSafetyInformation();
-        technical = getTechnical();
-        dateTechnicalChanged = getTechnicalInformation();
-        beta = getBeta();
-        market = getMarket();
         highProjections = getHighProjections();
         lowProjections = getLowProjections();
         projectionYears = getProjectionYears();
@@ -126,54 +117,26 @@ public class AnalysisEngine
         insiderBuys = getInsiderBuyDecisions();
         insiderOptions = getInsiderOptionsDecisions();
         insiderSells = getInsiderSellDecisions();
-        institutionalBuys = getInstitutionalBuys();
-        institutionalSells = getInstitutionalSells();
-        institutionalHLDs = getInstitutionalHLDs();
         years = getYears();
-        revenuesPerShare = getDoubleValue("Revenues per sh");
-        cashFlowPerShare = getDoubleValue("Cash Flow");
-        earningsPerShare = getDoubleValue("Earnings per sh");
-        dividendsDeclaredPerShare = getDoubleValue("Div'ds DecI'd per sh");
-        capitalSpendingPerShare = getDoubleValue("Cap'l Spending per sh");
-        bookValuePerShare = getDoubleValue("Book Value per sh");
-        commonSharesOutstanding = getDoubleValue("Common Shs Outst'g");
-        averageAnnualPERatio = getDoubleValue("Avg Ann'l PIE Ratio");
-        relativePERatios = getDoubleValue("Relative PIE Ratio");
-        averageAnnualDividendYield = getDoubleValue("Avg Ann'l Div'd Yield");
-        revenues = getDoubleValue("Revenues ($mill)");
-        operatingMargin = getDoubleValue("Operating Margin");
-        depreciation = getDoubleValue("Depreciation");
-        netProfit = getDoubleValue("Net Profit");
-        incomeTaxRate = getDoubleValue("Income Tax Rate");
-        netProfitMargin = getDoubleValue("Net Profit Margin");
-        workingCapital = getDoubleValue("Working Cap'l");
-        longTermDebt = getDoubleValue("Long-Term Debt");
-        shareEquity = getDoubleValue("Shr. Equity");
-        returnOnTotalCapital = getDoubleValue("Return on Total Cap'l");
-        returnOnShareEquity = getDoubleValue("Return on Shr. Equity");
-        retainedToCommonEquity = getDoubleValue("Retained to Corn Eq");
-        allDividendsToNetProfit = getDoubleValue("All Div'ds to Net Prof");
-        currentPositionYears = getDoubleValue("CURRENT POSITION");
-        //cashAssets = getCurrentPosition("Cash Assets");
-        //receivables = getCurrentPosition("Receivables");
-        //inventory = getCurrentPosition("Inventory");
-        currentAssets = getDoubleValue("Current Assets");
-        //accountsPayable = getCurrentPosition("Payable");
-        //debtDue = getCurrentPosition("Debt");
-        currentLiability = getDoubleValue("Current Liab.");/*
+        revenuesPerShare = getDoubleValue("Revenues per sh", "BottomHalf.txt");
+        cashFlowPerShare = getDoubleValue("Cash Flow", "BottomHalf.txt");
+        earningsPerShare = getDoubleValue("Earnings per sh", "BottomHalf.txt");
+        bookValuePerShare = getDoubleValue("Book Value per sh", "BottomHalf.txt");
+        averageAnnualPERatio = getDoubleValue("Avg Ann'l PIE Ratio", "BottomHalf.txt");
+        averageAnnualDividendYield = getDoubleValue("Avg Ann'l Div'd Yield", "BottomHalf.txt");
+        revenues = getDoubleValue("Revenues ($mill)", "BottomHalf.txt");
+        netProfit = getDoubleValue("Net Profit", "BottomHalf.txt");
+        netProfitMargin = getDoubleValue("Net Profit Margin", "BottomHalf.txt");
+        longTermDebt = getDoubleValue("Long-Term Debt", "BottomHalf.txt");
+        returnOnShareEquity = getDoubleValue("Return on Shr. Equity", "BottomHalf.txt");
+        currentPositionYears = getDoubleValue("CURRENT POSITION", "CurrentPosition.txt");
+        currentAssets = getDoubleValue("Current Assets", "CurrentPosition.txt");
+        currentLiability = getDoubleValue("Current Liab.", "CurrentPosition.txt");
         annualRevenues = getAnnualRates("Revenues");
-        annualCashFlow = getAnnualRates("Cash Flow");
         annualEarnings = getAnnualRates("Earnings");
         annualDividends = getAnnualRates("Dividends");
         annualBookValue = getAnnualRates("Book Value");
-        fiscalQuarterlyRevenues = getQuarterlyRevenues();
-        fiscalEarningsPerShare = getEarningsPerShare();
-        quarterlyDividends = getQuarterlyDividendsPaid();
-        businessInformation = getBusinessInformation();
-        companyInformation = getCompanyInformation();
         totalDebt = getTotalDebt();
-        debtDueIn5Years = getDebtDueIn5Years();
-        commonStock = getCommonStock();
         marketCap = getMarketCap();
         companyStrength = getStrength();
         priceStability = getStats("Stability");
@@ -181,7 +144,59 @@ public class AnalysisEngine
         predictability = getStats("Predictability");
         yearHighs = getHighs();
         yearLows = getLows();
-        percentTotalReturn = getPercentTotalReturn();*/
+    }
+
+    private ArrayList<Double> checkForFile(String filename, String value){
+        ArrayList<Double> values = new ArrayList<Double>();
+        File file = new File(data + "/" + filename + ".txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = br.readLine();
+
+                while (!line.contains(value)){
+                    String temp;
+                    temp = br.readLine();
+
+                    if (temp == null){
+                        break;
+                    }
+                    line = temp;
+                }
+
+                Scanner sc = new Scanner(line);
+
+                while (sc.hasNext()){
+                    if (sc.hasNextDouble()) {
+                        String d = sc.next();
+
+                        if (d.compareTo("1") != 0){
+                            if (!d.contains(","))
+                                values.add(Double.parseDouble(d));
+                        }
+                    }
+                    else {
+                        String s = sc.next();
+                        if (s.contains("%") && s.length() > 1){
+                            String st = s.substring(0, s.indexOf('%'));
+
+                            if (st.contains("(")){
+                                st = st.substring(st.indexOf('(') + 1, st.length());
+                            }
+                            values.add(Double.parseDouble(st));
+                        }
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            return values;
+        }
+        else
+            return values;
     }
     private String getSymbol(){
         File file = new File(data + "/Symbol.txt");
@@ -894,8 +909,9 @@ public class AnalysisEngine
         }
         return years;
     }
-    private ArrayList<Double> getDoubleValue(String value){
+    private ArrayList<Double> getDoubleValue(String value, String filename){
         ArrayList<Double> values = new ArrayList<Double>();
+        ArrayList<Double> test = new ArrayList<Double>();
         File file = new File(data + "/BottomHalf.txt");
 
         if (file.exists()) {
@@ -908,6 +924,7 @@ public class AnalysisEngine
                     temp = br.readLine();
 
                     if (temp == null){
+                        test = checkForFile(filename, value);
                         break;
                     }
                     line = temp;
@@ -915,24 +932,34 @@ public class AnalysisEngine
 
                 Scanner sc = new Scanner(line);
 
-                while (sc.hasNext()){
-                    if (sc.hasNextDouble()) {
-                        String d = sc.next();
 
-                        if (d.compareTo("1") != 0){
-                            if (!d.contains(","))
-                                values.add(Double.parseDouble(d));
-                        }
+                if (test.size() > 0) {
+                    values.clear();
+
+                    for (int i = 0; i < test.size(); i++)
+                    {
+                        values.add(test.get(i));
                     }
-                    else {
-                        String s = sc.next();
-                        if (s.contains("%") && s.length() > 1){
-                            String st = s.substring(0, s.indexOf('%'));
+                }
+                else {
+                    while (sc.hasNext()) {
+                        if (sc.hasNextDouble()) {
+                            String d = sc.next();
 
-                            if (st.contains("(")){
-                                st = st.substring(st.indexOf('(') + 1, st.length());
+                            if (d.compareTo("1") != 0) {
+                                if (!d.contains(","))
+                                    values.add(Double.parseDouble(d));
                             }
-                            values.add(Double.parseDouble(st));
+                        } else {
+                            String s = sc.next();
+                            if (s.contains("%") && s.length() > 1) {
+                                String st = s.substring(0, s.indexOf('%'));
+
+                                if (st.contains("(")) {
+                                    st = st.substring(st.indexOf('(') + 1, st.length());
+                                }
+                                values.add(Double.parseDouble(st));
+                            }
                         }
                     }
                 }
@@ -1391,13 +1418,9 @@ public class AnalysisEngine
         String string = "Symbol: " + symbol + "\n" +
                         "Recent Price: " + recentPrice + "\n" +
                         "P/E Ratio: " + PERatio + "\n" +
-                        "Trailing P/E Ratio: " + trailingPERatio + "\n" +
-                        "Median P/E Ratio: " + medianPERatio + "\n" +
-                        "Relative P/E Ratio: " + relativePERatio + "\n" +
                         "Dividend Yield: " + dividendYield + "\n" +
                         "Timeliness: " + timeliness + "\n" +
                         "Safety: " + safety + "\n" +
-                        "Technical: " + technical + "\n" +
                         projectionYears[0] + " - " + projectionYears[1] +
                         "\n\tHigh: " + highProjections[0] + "\t" + highProjections[1] + " \t" + highProjections[2] + " \n" +
                         "\tLow: " + lowProjections[0] + " \t" + lowProjections[1] + " \t" + lowProjections[2] + " \n";
@@ -1419,20 +1442,6 @@ public class AnalysisEngine
         }
         string += "\n\n";
 
-        string += "Institutional Decisions: \n";
-        for (int i = 0; i < institutionalBuys.size(); i++){
-            string += institutionalBuys.get(i) + " ";
-        }
-        string += "\n";
-        for (int i = 0; i < institutionalSells.size(); i++){
-            string += institutionalSells.get(i) + " ";
-        }
-        string += "\n";
-        for (int i = 0; i < institutionalHLDs.size(); i++){
-            string += institutionalHLDs.get(i) + " ";
-        }
-        string += "\n\n";
-
         for (int i = 0; i < years.size(); i++){
             string += years.get(i) + " ";
         }
@@ -1450,30 +1459,17 @@ public class AnalysisEngine
             string += earningsPerShare.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < dividendsDeclaredPerShare.size(); i++){
-            string += dividendsDeclaredPerShare.get(i) + " ";
-        }
-        string += "\n";
-        for (int i = 0; i < capitalSpendingPerShare.size(); i++){
-            string += capitalSpendingPerShare.get(i) + " ";
-        }
-        string += "\n";
+
         for (int i = 0; i < bookValuePerShare.size(); i++){
             string += bookValuePerShare.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < commonSharesOutstanding.size(); i++){
-            string += commonSharesOutstanding.get(i) + " ";
-        }
-        string += "\n";
+
         for (int i = 0; i < averageAnnualPERatio.size(); i++){
             string += averageAnnualPERatio.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < relativePERatios.size(); i++){
-            string += relativePERatios.get(i) + " ";
-        }
-        string += "\n";
+
         for (int i = 0; i < averageAnnualDividendYield.size(); i++){
             string += averageAnnualDividendYield.get(i) + " ";
         }
@@ -1482,53 +1478,25 @@ public class AnalysisEngine
             string += revenues.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < operatingMargin.size(); i++){
-            string += operatingMargin.get(i) + " ";
-        }
-        string += "\n";
-        for (int i = 0; i < depreciation.size(); i++){
-            string += depreciation.get(i) + " ";
-        }
-        string += "\n";
+
         for (int i = 0; i < netProfit.size(); i++){
             string += netProfit.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < incomeTaxRate.size(); i++){
-            string += incomeTaxRate.get(i) + " ";
-        }
-        string += "\n";
+
         for (int i = 0; i < netProfitMargin.size(); i++){
             string += netProfitMargin.get(i) + " ";
         }
         string += "\n";
 
-        for (int i = 0; i < workingCapital.size(); i++){
-            string += workingCapital.get(i) + " ";
-        }
-        string += "\n";
         for (int i = 0; i < longTermDebt.size(); i++){
             string += longTermDebt.get(i) + " ";
         }
         string += "\n";
-        for (int i = 0; i < shareEquity.size(); i++){
-            string += shareEquity.get(i) + " ";
-        }
-        string += "\n";
-        for (int i = 0; i < returnOnTotalCapital.size(); i++){
-            string += returnOnTotalCapital.get(i) + " ";
-        }
-        string += "\n";
+
+
         for (int i = 0; i < returnOnShareEquity.size(); i++){
             string += returnOnShareEquity.get(i) + " ";
-        }
-        string += "\n";
-        for (int i = 0; i < retainedToCommonEquity.size(); i++){
-            string += retainedToCommonEquity.get(i) + " ";
-        }
-        string += "\n";
-        for (int i = 0; i < allDividendsToNetProfit.size(); i++){
-            string += allDividendsToNetProfit.get(i) + " ";
         }
         string += "\n";
         for (int i = 0; i < currentPositionYears.size(); i++){
