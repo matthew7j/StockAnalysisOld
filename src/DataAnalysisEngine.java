@@ -111,6 +111,14 @@ public class DataAnalysisEngine {
                 }
                 tableValues.get(index).clear();
                 tableValues.add(index, engine.averageAnnualPERatio);
+            case "Revenues per sh":
+                engine.revenuesPerShare.clear();
+                engine.revenuesPerShare = getDoubleValue("Sales per sh", "bottomHalf.txt");
+                if (engine.revenuesPerShare.size() > 0) {
+                    returnVal = true;
+                }
+                tableValues.get(index).clear();
+                tableValues.add(index, engine.revenuesPerShare);
         }
         return returnVal;
     }
@@ -166,6 +174,7 @@ public class DataAnalysisEngine {
                                     try {
                                         values.add(Double.parseDouble(s));
                                     } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
                                 }
                             }
@@ -178,10 +187,8 @@ public class DataAnalysisEngine {
                         }
                     }
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return values;
         } else
