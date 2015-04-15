@@ -130,29 +130,29 @@ public class AnalysisEngine
         institutionalSells = getInstitutionalSells();
         institutionalHLDs = getInstitutionalHLDs();
         years = getYears();
-        revenuesPerShare = getDoubleValue("revenuesPerShare");
-        cashFlowPerShare = getDoubleValue("cashFlowPerShare");
-        earningsPerShare = getDoubleValue("earningsPerShare");
-        dividendsDeclaredPerShare = getDoubleValue("dividendsDeclaredPerShare");
-        capitalSpendingPerShare = getDoubleValue("capitalSpendingPerShare");
-        bookValuePerShare = getDoubleValue("bookValuePerShare");
-        commonSharesOutstanding = getDoubleValue("commonSharesOutstanding");
-        averageAnnualPERatio = getDoubleValue("AverageAnnualPE_Ratio");
-        relativePERatios = getDoubleValue("RelativePERatio");
-        averageAnnualDividendYield = getDoubleValue("AverageAnnualDividendYield");
-        revenues = getDoubleValue("revenues");
-        operatingMargin = getDoubleValue("operatingMargin");
-        depreciation = getDoubleValue("depreciation");
-        netProfit = getDoubleValue("netProfit");
-        incomeTaxRate = getDoubleValue("incomeTaxRate");
-        netProfitMargin = getDoubleValue("netProfitMargin");
-        workingCapital = getDoubleValue("workingCapital");
-        longTermDebt = getDoubleValue("longTermDebt");
-        shareEquity = getDoubleValue("shareEquity");
-        returnOnTotalCapital = getDoubleValue("returnOnTotalCapital");
-        returnOnShareEquity = getDoubleValue("returnOnShareEquity");
-        retainedToCommonEquity = getDoubleValue("retainedToCommonEquity");
-        allDividendsToNetProfit = getDoubleValue("allDividendsToNetProfit");
+        revenuesPerShare = getDoubleValue("Revenues per sh");
+        cashFlowPerShare = getDoubleValue("Cash Flow");
+        earningsPerShare = getDoubleValue("Earnings per sh");
+        dividendsDeclaredPerShare = getDoubleValue("Div'ds DecI'd per sh");
+        capitalSpendingPerShare = getDoubleValue("Cap'l Spending per sh");
+        bookValuePerShare = getDoubleValue("Book Value per sh");
+        commonSharesOutstanding = getDoubleValue("Common Shs Outst'g");
+        averageAnnualPERatio = getDoubleValue("Avg Ann'l PIE Ratio");
+        relativePERatios = getDoubleValue("Relative PIE Ratio");
+        averageAnnualDividendYield = getDoubleValue("Avg Ann'l Div'd Yield");
+        revenues = getDoubleValue("Revenues ($mill)");
+        operatingMargin = getDoubleValue("Operating Margin");
+        depreciation = getDoubleValue("Depreciation");
+        netProfit = getDoubleValue("Net Profit");
+        incomeTaxRate = getDoubleValue("Income Tax Rate");
+        netProfitMargin = getDoubleValue("Net Profit Margin");
+        workingCapital = getDoubleValue("Working Cap'l");
+        longTermDebt = getDoubleValue("Long-Term Debt");
+        shareEquity = getDoubleValue("Shr. Equity");
+        returnOnTotalCapital = getDoubleValue("Return on Total Cap'l");
+        returnOnShareEquity = getDoubleValue("Return on Shr. Equity");
+        retainedToCommonEquity = getDoubleValue("Retained to Corn Eq");
+        allDividendsToNetProfit = getDoubleValue("All Div'ds to Net Prof");/*
         currentPositionYears = getCurrentPosition("CURRENT POSITION");
         cashAssets = getCurrentPosition("Cash Assets");
         receivables = getCurrentPosition("Receivables");
@@ -181,7 +181,7 @@ public class AnalysisEngine
         predictability = getStats("Predictability");
         yearHighs = getHighs();
         yearLows = getLows();
-        percentTotalReturn = getPercentTotalReturn();
+        percentTotalReturn = getPercentTotalReturn();*/
     }
     private String getSymbol(){
         File file = new File(data + "/Symbol.txt");
@@ -231,7 +231,9 @@ public class AnalysisEngine
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
-                peRatio = Double.parseDouble(line);
+                try {
+                    peRatio = Double.parseDouble(line);
+                }catch(Exception e){}
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
@@ -251,7 +253,10 @@ public class AnalysisEngine
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
                 line = line.replaceAll(",", ".");
-                trailingPERatio = Double.parseDouble(line);
+                try {
+                    trailingPERatio = Double.parseDouble(line);
+                }catch(Exception e){}
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
@@ -272,7 +277,11 @@ public class AnalysisEngine
                 br.readLine();
                 String line = br.readLine();
                 line = line.replaceAll(",", ".");
-                medianPERatio = Double.parseDouble(line);
+                try {
+                    medianPERatio = Double.parseDouble(line);
+                }
+                catch (NumberFormatException e){
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
@@ -291,7 +300,12 @@ public class AnalysisEngine
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
-                relativePERatio = Double.parseDouble(line);
+
+                try {
+                    relativePERatio = Double.parseDouble(line);
+                }
+                catch (NumberFormatException e){
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
@@ -310,7 +324,13 @@ public class AnalysisEngine
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
-                dividendYield = Double.parseDouble(line);
+
+                try {
+                    dividendYield = Double.parseDouble(line);
+                }
+                catch (NumberFormatException e){
+
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
@@ -864,14 +884,24 @@ public class AnalysisEngine
         }
         return years;
     }
-    private ArrayList<Double> getDoubleValue(String fileName){
+    private ArrayList<Double> getDoubleValue(String value){
         ArrayList<Double> values = new ArrayList<Double>();
-        File file = new File(data + "/" + fileName + ".txt");
+        File file = new File(data + "/BottomHalf.txt");
 
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
+
+                while (!line.contains(value)){
+                    String temp;
+                    temp = br.readLine();
+
+                    if (temp == null){
+                        break;
+                    }
+                    line = temp;
+                }
 
                 Scanner sc = new Scanner(line);
 
@@ -880,7 +910,8 @@ public class AnalysisEngine
                         String d = sc.next();
 
                         if (d.compareTo("1") != 0){
-                            values.add(Double.parseDouble(d));
+                            if (!d.contains(","))
+                                values.add(Double.parseDouble(d));
                         }
                     }
                     else {
@@ -1456,6 +1487,7 @@ public class AnalysisEngine
             string += netProfitMargin.get(i) + " ";
         }
         string += "\n";
+
         for (int i = 0; i < workingCapital.size(); i++){
             string += workingCapital.get(i) + " ";
         }
