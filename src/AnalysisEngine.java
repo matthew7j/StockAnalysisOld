@@ -1,9 +1,6 @@
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class AnalysisEngine
 {
@@ -107,7 +104,7 @@ public class AnalysisEngine
     }
 
     private ArrayList<Double> checkForFile(String filename, String value){
-        ArrayList<Double> values = new ArrayList<Double>();
+        ArrayList<Double> values = new ArrayList<>();
         File file = new File(data + "/" + filename + ".txt");
 
         if (file.exists()) {
@@ -148,10 +145,8 @@ public class AnalysisEngine
                         }
                     }
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return values;
         }
@@ -169,10 +164,8 @@ public class AnalysisEngine
                 int index = line.indexOf('.');
                 symbol = line.substring(index + 1, line.length());
                 symbol = symbol.toUpperCase();
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return symbol;
         }
@@ -188,10 +181,8 @@ public class AnalysisEngine
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
                 price = Double.parseDouble(line);
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return price;
         }
@@ -208,11 +199,11 @@ public class AnalysisEngine
                 String line = br.readLine();
                 try {
                     peRatio = Double.parseDouble(line);
-                }catch(Exception e){}
-            } catch (FileNotFoundException e) {
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return peRatio;
         }
@@ -233,12 +224,10 @@ public class AnalysisEngine
                     dividendYield = Double.parseDouble(line);
                 }
                 catch (NumberFormatException e){
-
+                    e.printStackTrace();
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return dividendYield;
         }
@@ -256,12 +245,12 @@ public class AnalysisEngine
 
                 try {
                     safety = Integer.parseInt(line.substring(0, 1));
-                }catch(Exception e){}
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return safety;
         }
@@ -279,12 +268,12 @@ public class AnalysisEngine
                 try
                 {
                     timeliness = Integer.parseInt(line.substring(0, 1));
-                }catch(Exception e){}
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return timeliness;
         }
@@ -325,10 +314,8 @@ public class AnalysisEngine
                 }
 
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return high;
         }
@@ -371,10 +358,8 @@ public class AnalysisEngine
                         low[i] = Double.parseDouble(line.substring(indexStart, indexNext));
                     indexStart = indexNext;
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return low;
         }
@@ -412,10 +397,8 @@ public class AnalysisEngine
                 }
                 years[1] = year;
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return years;
         }
@@ -439,16 +422,14 @@ public class AnalysisEngine
                 returnString = returnString.replaceAll("\t", "");
                 returnString = returnString.replaceAll(" ", "");
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
         }
         return returnString;
     }
     private ArrayList<Integer> getInsiderBuyDecisions(){
-        ArrayList<Integer> decisions = new ArrayList<Integer>();
+        ArrayList<Integer> decisions = new ArrayList<>();
         File file = new File(data + "/Insider_Decisions.txt");
 
         if (file.exists()) {
@@ -469,16 +450,14 @@ public class AnalysisEngine
                     }
                 }
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
         }
         return decisions;
     }
     private ArrayList<Integer> getInsiderOptionsDecisions(){
-        ArrayList<Integer> decisions = new ArrayList<Integer>();
+        ArrayList<Integer> decisions = new ArrayList<>();
         File file = new File(data + "/Insider_Decisions.txt");
 
         if (file.exists()) {
@@ -498,18 +477,14 @@ public class AnalysisEngine
                         sc.next();
                     }
                 }
-
-
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
         }
         return decisions;
     }
     private ArrayList<Integer> getInsiderSellDecisions(){
-        ArrayList<Integer> decisions = new ArrayList<Integer>();
+        ArrayList<Integer> decisions = new ArrayList<>();
         File file = new File(data + "/Insider_Decisions.txt");
 
         if (file.exists()) {
@@ -530,16 +505,14 @@ public class AnalysisEngine
                     }
                 }
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
         }
         return decisions;
     }
     private ArrayList<Integer> getYears(){
-        ArrayList<Integer> years = new ArrayList<Integer>();
+        ArrayList<Integer> years = new ArrayList<>();
 
         File file = new File(data + "/DataYears.txt");
 
@@ -566,17 +539,15 @@ public class AnalysisEngine
                     else
                         sc.next();
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
         }
         return years;
     }
     private ArrayList<Double> getDoubleValue(String value, String filename){
-        ArrayList<Double> values = new ArrayList<Double>();
-        ArrayList<Double> test = new ArrayList<Double>();
+        ArrayList<Double> values = new ArrayList<>();
+        ArrayList<Double> test = new ArrayList<>();
         File file = new File(data + "/" + filename);
 
         if (file.exists()) {
@@ -627,7 +598,9 @@ public class AnalysisEngine
                                 if (!s.contains(",")) {
                                     try {
                                         values.add(Double.parseDouble(s));
-                                    } catch (Exception e) {}
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                             if (s.equals("-") || s.equals("--")){
@@ -639,10 +612,8 @@ public class AnalysisEngine
                         }
                     }
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return values;
         }
@@ -677,24 +648,25 @@ public class AnalysisEngine
                                 line2 = br2.readLine();
                             }
                             int start = line2.indexOf('$') + 1;
-
                             int end = line2.indexOf('D', start + 1);
-                            returnVal = line.substring(start, end);
+
+                            returnVal = line2.substring(start, end);
+
                         } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 }
 
-                int start = line.indexOf('$');
-                int end = line.indexOf(' ', start + 1);
-                end = line.indexOf(' ', end + 1);
+                if (line != null) {
+                    int start = line.indexOf('$');
+                    int end = line.indexOf(' ', start + 1);
+                    end = line.indexOf(' ', end + 1);
 
-                returnVal = line.substring(start, end);
-
-            } catch (FileNotFoundException e) {
+                    returnVal = line.substring(start, end);
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
         }
         return returnVal;
@@ -732,6 +704,7 @@ public class AnalysisEngine
                             int end = line2.indexOf('(', start + 1);
                             returnVal = line2.substring(start, end);
                         } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -741,10 +714,8 @@ public class AnalysisEngine
                     int end = line.indexOf('(', start + 1);
                     returnVal = line.substring(start, end);
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
         }
         return returnVal;
@@ -769,10 +740,8 @@ public class AnalysisEngine
                     else
                         sc.next();
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return returnVal;
         }
@@ -802,10 +771,8 @@ public class AnalysisEngine
                     }
                 }
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return returnVal;
         }
@@ -815,7 +782,7 @@ public class AnalysisEngine
     private ArrayList<Double> getHighs()
     {
         File file = new File(data + "/hi_lo.txt");
-        ArrayList<Double> highs = new ArrayList<Double>();
+        ArrayList<Double> highs = new ArrayList<>();
 
         if (file.exists()) {
             try {
@@ -827,10 +794,8 @@ public class AnalysisEngine
                     highs.add(sc.nextDouble());
                 }
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return highs;
         }
@@ -840,7 +805,7 @@ public class AnalysisEngine
     private ArrayList<Double> getLows()
     {
         File file = new File(data + "/hi_lo.txt");
-        ArrayList<Double> lows = new ArrayList<Double>();
+        ArrayList<Double> lows = new ArrayList<>();
 
         if (file.exists()) {
             try {
@@ -854,10 +819,8 @@ public class AnalysisEngine
                     lows.add(sc.nextDouble());
                 }
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
             }
             return lows;
         }
