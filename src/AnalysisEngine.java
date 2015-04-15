@@ -576,7 +576,7 @@ public class AnalysisEngine
     private ArrayList<Double> getDoubleValue(String value, String filename){
         ArrayList<Double> values = new ArrayList<Double>();
         ArrayList<Double> test = new ArrayList<Double>();
-        File file = new File(data + "/BottomHalf.txt");
+        File file = new File(data + "/" + filename);
 
         if (file.exists()) {
             try {
@@ -634,201 +634,7 @@ public class AnalysisEngine
         else
             return values;
     }
-    private ArrayList<Integer> getCurrentPosition(String s)
-    {
-        ArrayList<Integer> values = new ArrayList<Integer>();
-        int val = 0;
-        File file = new File(data + "/currentPosition.txt");
 
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
-                while (!line.contains(s)) {
-                    line = br.readLine();
-                }
-
-                Scanner sc = new Scanner(line);
-
-                while (sc.hasNextInt()){
-                    val = sc.nextInt();
-                    values.add(val);
-                }
-                if (s.compareTo("CURRENT POSITION") == 0)
-                {
-                    values.add(val + 1);
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return values;
-        }
-        else
-            return values;
-    }
-
-    private ArrayList<Double> getAnnualRates(String s)
-    {
-        ArrayList<Double> values = new ArrayList<Double>();
-        File file = new File(data + "/AnnualRates.txt");
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = br.readLine();
-                while (!line.contains(s)) {
-                    line = br.readLine();
-                }
-
-                Scanner sc = new Scanner(line);
-
-                while (sc.hasNextInt()){
-                    values.add(sc.nextDouble());
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return values;
-        }
-        else
-            return values;
-    }
-    private int[][] getQuarterlyRevenues()
-    {
-        int[][] values = new int[5][5];
-
-        File file = new File(data + "/quarterlyRevenues.txt");
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
-                for (int i = 0; i < 4; i++) {
-                    line = br.readLine();
-                }
-
-                for (int i = 0; i < 5; i++)
-                {
-                    line = line.replace(".", " ");
-                    Scanner sc = new Scanner(line);
-                    for (int j = 0; j < 5; j++)
-                    {
-                        values[i][j] = sc.nextInt();
-                    }
-                    line = br.readLine();
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return values;
-        }
-        else
-            return values;
-    }
-    private double[][] getEarningsPerShare()
-    {
-        double[][] values = new double[5][6];
-        int j = 0;
-
-        File file = new File(data + "/quarterlyEarningsPerShare.txt");
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
-                for (int i = 0; i < 4; i++) {
-                    line = br.readLine();
-                }
-
-                for (int i = 0; i < 5; i++)
-                {
-                    Scanner sc = new Scanner(line);
-                    while(sc.hasNext()){
-                        if (sc.hasNextDouble()){
-                            values[i][j++] = sc.nextDouble();
-                        }
-                        else {
-                            sc.next();
-                        }
-                    }
-                    j = 0;
-                    line = br.readLine();
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return values;
-        }
-        else
-            return values;
-    }
-    private double[][] getQuarterlyDividendsPaid()
-    {
-        double[][] values = new double[5][5];
-
-        File file = new File(data + "/quarterlyDividends.txt");
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
-                for (int i = 0; i < 3; i++) {
-                    line = br.readLine();
-                }
-
-                for (int i = 0; i < 5; i++)
-                {
-                    Scanner sc = new Scanner(line);
-                    for (int j = 0; j < 5; j++)
-                    {
-                        values[i][j] = sc.nextDouble();
-                    }
-                    line = br.readLine();
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return values;
-        }
-        else
-            return values;
-    }
-    private String getBusinessInformation()
-    {
-        String file = data + "/CompanyBusiness.txt";
-        String result = "";
-        try {
-            result = Files.lines(Paths.get(file)).collect(Collectors.joining());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e2) {
-            e2.printStackTrace();
-        }
-        return result;
-    }
-    private String getCompanyInformation()
-    {
-        String file = data + "/CompanyInformation.txt";
-        String result = "";
-        try {
-            result = Files.lines(Paths.get(file)).collect(Collectors.joining());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e2) {
-            e2.printStackTrace();
-        }
-        return result;
-    }
     private String getTotalDebt()
     {
         File file = new File(data + "/capitalStructure.txt");
@@ -857,60 +663,7 @@ public class AnalysisEngine
         }
         return returnVal;
     }
-    private String getDebtDueIn5Years() {
-        File file = new File(data + "/capitalStructure.txt");
-        String returnVal = "0";
 
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
-                while (!line.contains("Total Debt")) {
-                    line = br.readLine();
-                }
-
-                int start = line.indexOf('$');
-                start = line.indexOf('$', start + 1);
-                int end = line.indexOf(' ', start);
-                end = line.indexOf(' ', end);
-
-                returnVal = line.substring(start, end);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-        }
-        return returnVal;
-    }
-
-    private String getCommonStock()
-    {
-        File file = new File(data + "/capitalStructure.txt");
-        String returnVal = "0";
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
-                while (!line.contains("Common Stock")){
-                    line = br.readLine();
-                }
-
-                int start = line.indexOf(' ');
-                start = line.indexOf(' ', start + 1);
-                int end = line.indexOf(' ', start + 1);
-
-                returnVal = line.substring(start, end);
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-        }
-        return returnVal;
-    }
     private String getMarketCap()
     {
         File file = new File(data + "/capitalStructure.txt");
@@ -975,7 +728,19 @@ public class AnalysisEngine
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
-                returnVal = line.substring(line.lastIndexOf(' '), line.length() - 1);
+
+                while (!line.contains("Strength")){
+                    line = br.readLine();
+                }
+
+                Scanner sc = new Scanner(line);
+
+                while (sc.hasNext()){
+                    if (sc.next().contains("Strength")){
+                        returnVal = sc.next();
+                    }
+                }
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
@@ -1038,42 +803,6 @@ public class AnalysisEngine
         else
             return lows;
     }
-    private double[][] getPercentTotalReturn()
-    {
-        File file = new File(data + "/percentTotalReturn.txt");
-        double[][] vals = new double[3][2];
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
-                for (int i = 0; i < 4; i++) {
-                    line = br.readLine();
-                }
-                Scanner sc;
-                for (int i = 0; i < 3; i++)
-                {
-                    sc = new Scanner(line);
-                    for (int j = 0; j < 2; j++){
-                        while(sc.hasNext()) {
-                            if (sc.hasNextDouble())
-                                vals[i][j] = sc.nextDouble();
-                            else
-                                sc.next();
-                        }
-                    }
-                }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return vals;
-        }
-        else
-            return vals;
-    }
 
     public String toString(){
         String string = "Symbol: " + symbol + "\n" +
@@ -1089,114 +818,104 @@ public class AnalysisEngine
         for (int i = 0; i < insiderDecisionRange.length(); i++){
             string += insiderDecisionRange.charAt(i) + " ";
         }
-        string += "\n";
+        string += "\nInsider Buys: ";
         for (int i = 0; i < insiderBuys.size(); i++){
             string += insiderBuys.get(i) + " ";
         }
-        string += "\n";
+        string += "\nInsider Options: ";
         for (int i = 0; i < insiderOptions.size(); i++){
             string += insiderOptions.get(i) + " ";
         }
-        string += "\n";
+        string += "\nInsider Sells: ";
         for (int i = 0; i < insiderSells.size(); i++){
             string += insiderSells.get(i) + " ";
         }
-        string += "\n\n";
-
+        string += "\n\nYears: ";
         for (int i = 0; i < years.size(); i++){
             string += years.get(i) + " ";
         }
-        string += "\n";
-
+        string += "\nRevenues Per Share: ";
         for (int i = 0; i < revenuesPerShare.size(); i++){
             string += revenuesPerShare.get(i) + " ";
         }
-        string += "\n";
+        string += "\nCash Flow Per Share: ";
         for (int i = 0; i < cashFlowPerShare.size(); i++){
             string += cashFlowPerShare.get(i) + " ";
         }
-        string += "\n";
+        string += "\nEarnings Per Share: ";
         for (int i = 0; i < earningsPerShare.size(); i++){
             string += earningsPerShare.get(i) + " ";
         }
-        string += "\n";
-
+        string += "\nBook Value Per Share: ";
         for (int i = 0; i < bookValuePerShare.size(); i++){
             string += bookValuePerShare.get(i) + " ";
         }
-        string += "\n";
-
+        string += "\nAverage Annual P/E Ratio: ";
         for (int i = 0; i < averageAnnualPERatio.size(); i++){
             string += averageAnnualPERatio.get(i) + " ";
         }
-        string += "\n";
-
+        string += "\nAverage Annual Dividend Yield: ";
         for (int i = 0; i < averageAnnualDividendYield.size(); i++){
             string += averageAnnualDividendYield.get(i) + " ";
         }
-        string += "\n";
+        string += "\nRevenues: ";
         for (int i = 0; i < revenues.size(); i++){
             string += revenues.get(i) + " ";
         }
-        string += "\n";
-
+        string += "\nNet Profit: ";
         for (int i = 0; i < netProfit.size(); i++){
             string += netProfit.get(i) + " ";
         }
-        string += "\n";
-
+        string += "\nNet Profit Margin: ";
         for (int i = 0; i < netProfitMargin.size(); i++){
             string += netProfitMargin.get(i) + " ";
         }
-        string += "\n";
-
+        string += "\nLong Term Debt: ";
         for (int i = 0; i < longTermDebt.size(); i++){
             string += longTermDebt.get(i) + " ";
         }
-        string += "\n";
-
-
+        string += "\nReturn on Share Equity: ";
         for (int i = 0; i < returnOnShareEquity.size(); i++){
             string += returnOnShareEquity.get(i) + " ";
         }
-        string += "\n";
+        string += "\nCurrent Position Years: ";
         for (int i = 0; i < currentPositionYears.size(); i++){
             string += currentPositionYears.get(i) + " ";
         }
-        string += "\n";
+        string += "\nCurrent Assets: ";
         for (int i = 0; i < currentAssets.size(); i++){
             string += currentAssets.get(i) + " ";
         }
-        string += "\n";
+        string += "\nCurrent Liability: ";
         for (int i = 0; i < currentLiability.size(); i++){
             string += currentLiability.get(i) + " ";
         }
-        string += "\n";
+        string += "\nAnnual Revenues: ";
         for (int i = 0; i < annualRevenues.size(); i++){
             string += annualRevenues.get(i) + " ";
         }
-        string += "\n";
+        string += "\nAnnual Earnings: ";
         for (int i = 0; i < annualEarnings.size(); i++){
             string += annualEarnings.get(i) + " ";
         }
-        string += "\n";
+        string += "\nAnnual Dividends: ";
         for (int i = 0; i < annualDividends.size(); i++){
             string += annualDividends.get(i) + " ";
         }
-        string += "\n";
+        string += "\nAnnual Book Value: ";
         for (int i = 0; i < annualBookValue.size(); i++){
             string += annualBookValue.get(i) + " ";
         }
-        string += "\n";
+        string += "\nCompany Strength: ";
         string += companyStrength + " ";
 
-        string += "\n";
+        string += "\nPrice Stability: ";
         string += priceStability + " ";
 
-        string += "\n";
+        string += "\nGrowth Persistence: ";
         string += growthPersistence + " ";
 
-        string += "\n";
+        string += "\nPredictability: ";
         string += predictability + " ";
 
         return string;
