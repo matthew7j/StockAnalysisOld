@@ -621,6 +621,14 @@ public class AnalysisEngine
                                 }
                                 values.add(Double.parseDouble(st));
                             }
+                            if (s.contains("d")){
+                                s = s.replaceAll("d", "-");
+                                if (!s.contains(",")) {
+                                    try {
+                                        values.add(Double.parseDouble(s));
+                                    } catch (Exception e) {}
+                                }
+                            }
                         }
                     }
                 }
