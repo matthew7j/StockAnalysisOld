@@ -3,14 +3,13 @@ import java.util.ArrayList;
 public class DataAnalysisEngine
 {
     AnalysisEngine engine;
-    ArrayList<Integer> bottomHalfFrequency;
-    ArrayList<ArrayList<Double>> tableValues;
+    ArrayList<ArrayList<Double>> tableValues = new ArrayList<ArrayList<Double>>();
+    ArrayList<Integer> changed = new ArrayList<Integer>();
     public DataAnalysisEngine(AnalysisEngine engine){
         this.engine = engine;
         analyze();
     }
     private void analyze(){
-        getBottomHalfFrequency();
         getTableValues();
         if (analyzeYears()) {
             System.out.println("\nNew Years: \n");
@@ -18,20 +17,15 @@ public class DataAnalysisEngine
                 System.out.print(engine.years.get(i) + " ");
             }
         }
-    }
-
-    private void getBottomHalfFrequency(){
-        bottomHalfFrequency.add(engine.revenuesPerShare.size());
-        bottomHalfFrequency.add(engine.cashFlowPerShare.size());
-        bottomHalfFrequency.add(engine.earningsPerShare.size());
-        bottomHalfFrequency.add(engine.bookValuePerShare.size());
-        bottomHalfFrequency.add(engine.averageAnnualPERatio.size());
-        bottomHalfFrequency.add(engine.averageAnnualDividendYield.size());
-        bottomHalfFrequency.add(engine.revenues.size());
-        bottomHalfFrequency.add(engine.netProfit.size());
-        bottomHalfFrequency.add(engine.netProfitMargin.size());
-        bottomHalfFrequency.add(engine.longTermDebt.size());
-        bottomHalfFrequency.add(engine.returnOnShareEquity.size());
+        if (analyzeTable()){
+            System.out.println("\nNew Values: ");
+            for (int i = 0; i < changed.size(); i++){
+                for (int j = 0; j < tableValues.get(changed.get(i)).size(); j++) {
+                    System.out.print(tableValues.get(changed.get(i)).get(j) + " ");
+                }
+                System.out.println();
+            }
+        }
     }
 
     private void getTableValues(){
@@ -64,15 +58,23 @@ public class DataAnalysisEngine
         }
         return false;
     }
-    private void anaylzeTable(){
+    private boolean analyzeTable(){
+        boolean returnVal = false;
         for (int i = 0; i < tableValues.size(); i++){
+            boolean zeroFound = false;
             if (tableValues.get(i).size() > 1) {
-                for (int j = 0; j < tableValues.get(i).size(); j++){
-                    if (!String.valueOf(tableValues.get(i).get(j)).contains(".")){
+                for (int j = tableValues.get(i).size() - 1; j > -1; j--){
+                    if (tableValues.get(i).get(j).equals(-0.0)) {
+                        zeroFound = true;
+                    }
+                    else if (zeroFound) {
                         tableValues.get(i).remove(j);
+                        changed.add(i);
+                        returnVal = true;
                     }
                 }
             }
         }
+        return returnVal;
     }
 }

@@ -630,6 +630,12 @@ public class AnalysisEngine
                                     } catch (Exception e) {}
                                 }
                             }
+                            if (s.equals("-") || s.equals("--")){
+                                values.add(-0.00);
+                            }
+                            if (s.equals("NFM")){
+                                values.add(-0.000);
+                            }
                         }
                     }
                 }
@@ -656,6 +662,27 @@ public class AnalysisEngine
                 while (!line.contains("Total Debt"))
                 {
                     line = br.readLine();
+
+                    if (line == null)
+                        break;
+                }
+                if (line == null) {
+                    File file2 = new File(data + "/BottomHalf.txt");
+
+                    if (file2.exists()) {
+                        try {
+                            BufferedReader br2 = new BufferedReader(new FileReader(file2.getPath()));
+                            String line2 = "";
+                            while (!line2.contains("Total Debt")) {
+                                line2 = br2.readLine();
+                            }
+                            int start = line2.indexOf('$') + 1;
+
+                            int end = line2.indexOf('D', start + 1);
+                            returnVal = line.substring(start, end);
+                        } catch (Exception e) {
+                        }
+                    }
                 }
 
                 int start = line.indexOf('$');
@@ -684,11 +711,36 @@ public class AnalysisEngine
                 String line = "";
                 while (!line.contains("MARKET CAP")){
                     line = br.readLine();
+                    if (line == null)
+                    {
+                        break;
+                    }
                 }
-                int start = line.indexOf(':') + 1;
 
-                int end = line.indexOf(' ', start + 1);
-                returnVal = line.substring(start, end);
+                if (line == null) {
+                    File file2 = new File(data + "/BottomHalf.txt");
+
+                    if (file2.exists()) {
+                        try {
+                            BufferedReader br2 = new BufferedReader(new FileReader(file2.getPath()));
+                            String line2 = "";
+                            while (!line2.contains("MARKET CAP")) {
+                                line2 = br2.readLine();
+                            }
+                            int start = line2.indexOf(':') + 1;
+
+                            int end = line2.indexOf('(', start + 1);
+                            returnVal = line2.substring(start, end);
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+                else {
+                    int start = line.indexOf(':') + 1;
+
+                    int end = line.indexOf('(', start + 1);
+                    returnVal = line.substring(start, end);
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e2) {
@@ -887,6 +939,8 @@ public class AnalysisEngine
         for (int i = 0; i < returnOnShareEquity.size(); i++){
             string += returnOnShareEquity.get(i) + " ";
         }
+        string += "\nMarket Cap: ";
+        string += marketCap;
         string += "\nCurrent Position Years: ";
         for (int i = 0; i < currentPositionYears.size(); i++){
             string += currentPositionYears.get(i) + " ";
