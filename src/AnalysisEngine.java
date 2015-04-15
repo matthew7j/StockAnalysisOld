@@ -11,88 +11,47 @@ public class AnalysisEngine
 
     protected int[] projectionYears;
 
-    protected int[][] fiscalQuarterlyRevenues;
-
-    protected ArrayList<Integer> accountsPayable;
-    protected ArrayList<Integer> cashAssets;
-    protected ArrayList<Integer> debtDue;
-    protected ArrayList<Integer> inventory;
-    protected ArrayList<Integer> receivables;
     protected ArrayList<Integer> years;
 
     protected double[] highProjections;
     protected double[] lowProjections;
 
-    protected ArrayList<Double> allDividendsToNetProfit;
     protected ArrayList<Double> annualBookValue;
-    protected ArrayList<Double> annualCashFlow;
     protected ArrayList<Double> annualDividends;
     protected ArrayList<Double> annualEarnings;
     protected ArrayList<Double> annualRevenues;
     protected ArrayList<Double> averageAnnualDividendYield;
     protected ArrayList<Double> averageAnnualPERatio;
     protected ArrayList<Double> bookValuePerShare;
-    protected ArrayList<Double> capitalSpendingPerShare;
     protected ArrayList<Double> cashFlowPerShare;
-    protected ArrayList<Double> commonSharesOutstanding;
     protected ArrayList<Double> currentAssets;
     protected ArrayList<Double> currentLiability;
     protected ArrayList<Double> currentPositionYears;
-    protected ArrayList<Double> depreciation;
-    protected ArrayList<Double> dividendsDeclaredPerShare;
     protected ArrayList<Double> earningsPerShare;
-    protected ArrayList<Double> incomeTaxRate;
     protected ArrayList<Double> longTermDebt;
     protected ArrayList<Double> netProfit;
     protected ArrayList<Double> netProfitMargin;
-    protected ArrayList<Double> operatingMargin;
-    protected ArrayList<Double> relativePERatios;
-    protected ArrayList<Double> retainedToCommonEquity;
     protected ArrayList<Double> returnOnShareEquity;
-    protected ArrayList<Double> returnOnTotalCapital;
     protected ArrayList<Double> revenues;
     protected ArrayList<Double> revenuesPerShare;
-    protected ArrayList<Double> shareEquity;
-    protected ArrayList<Double> workingCapital;
     protected ArrayList<Double> yearHighs;
     protected ArrayList<Double> yearLows;
 
     protected ArrayList<Integer> insiderBuys;
     protected ArrayList<Integer> insiderOptions;
     protected ArrayList<Integer> insiderSells;
-    protected ArrayList<Integer> institutionalBuys;
-    protected ArrayList<Integer> institutionalHLDs;
-    protected ArrayList<Integer> institutionalSells;
-
-    protected double[][] fiscalEarningsPerShare;
-    protected double[][] quarterlyDividends;
-    protected double[][] percentTotalReturn;
 
     protected int growthPersistence;
     protected int predictability;
     protected int priceStability;
     protected int safety;
-    protected int technical;
     protected int timeliness;
 
-    protected double beta;
-
     protected double dividendYield;
-    protected double market;
-    protected double medianPERatio;
     protected double PERatio;
     protected double recentPrice;
-    protected double relativePERatio;
-    protected double trailingPERatio;
 
-    protected String businessInformation;
-    protected String commonStock;
-    protected String companyInformation;
     protected String companyStrength;
-    protected String dateSafetyChanged;
-    protected String dateTechnicalChanged;
-    protected String dateTimelinessChanged;
-    protected String debtDueIn5Years;
     protected String insiderDecisionRange;
     protected String marketCap;
     protected String symbol;
@@ -132,10 +91,10 @@ public class AnalysisEngine
         currentPositionYears = getDoubleValue("CURRENT POSITION", "CurrentPosition.txt");
         currentAssets = getDoubleValue("Current Assets", "CurrentPosition.txt");
         currentLiability = getDoubleValue("Current Liab.", "CurrentPosition.txt");
-        annualRevenues = getAnnualRates("Revenues");
-        annualEarnings = getAnnualRates("Earnings");
-        annualDividends = getAnnualRates("Dividends");
-        annualBookValue = getAnnualRates("Book Value");
+        annualRevenues = getDoubleValue("Revenues", "AnnualRates.txt");
+        annualEarnings = getDoubleValue("Earnings", "AnnualRates.txt");
+        annualDividends = getDoubleValue("Dividends", "AnnualRates.txt");
+        annualBookValue = getDoubleValue("Book Value", "AnnualRates.txt");
         totalDebt = getTotalDebt();
         marketCap = getMarketCap();
         companyStrength = getStrength();
@@ -259,78 +218,7 @@ public class AnalysisEngine
         else
             return 0;
     }
-    private double getTrailingPERatio(){
-        File file = new File(data + "/TrailingMedianPE_Ratio.txt");
 
-        if (file.exists()) {
-            double trailingPERatio = 0;
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = br.readLine();
-                line = line.replaceAll(",", ".");
-                try {
-                    trailingPERatio = Double.parseDouble(line);
-                }catch(Exception e){}
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return trailingPERatio;
-        }
-        else
-            return 0;
-    }
-    private double getMedianPERatio(){
-        File file = new File(data + "/TrailingMedianPE_Ratio.txt");
-
-        if (file.exists()) {
-            double medianPERatio = 0;
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                br.readLine();
-                String line = br.readLine();
-                line = line.replaceAll(",", ".");
-                try {
-                    medianPERatio = Double.parseDouble(line);
-                }
-                catch (NumberFormatException e){
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return medianPERatio;
-        }
-        else
-            return 0;
-    }
-    private double getRelativePERatio(){
-        File file = new File(data + "/RelativePE_Ratio.txt");
-
-        if (file.exists()) {
-            double relativePERatio = 0;
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = br.readLine();
-
-                try {
-                    relativePERatio = Double.parseDouble(line);
-                }
-                catch (NumberFormatException e){
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return relativePERatio;
-        }
-        else
-            return 0;
-    }
     private double getDividendYield(){
         File file = new File(data + "/DividendYield.txt");
 
@@ -379,70 +267,6 @@ public class AnalysisEngine
         else
             return 0;
     }
-    private String getSafetyInformation(){
-        File file = new File(data + "/Safety.txt");
-
-        if (file.exists()) {
-            String safety = "";
-
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = br.readLine();
-                safety = line.substring(2,line.length());
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return safety;
-        }
-        else
-            return "Error getting safety information";
-    }
-    private int getTechnical(){
-        File file = new File(data + "/Technical.txt");
-
-        if (file.exists()) {
-            int technical = 0;
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = br.readLine();
-                try {
-                    technical = Integer.parseInt(line.substring(0, 1));
-                }catch (Exception e){}
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return technical;
-        }
-        else
-            return 0;
-    }
-    private String getTechnicalInformation(){
-        File file = new File(data + "/Technical.txt");
-
-        if (file.exists()) {
-            String technical = "";
-
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = br.readLine();
-                technical = line.substring(2,line.length());
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return technical;
-        }
-        else
-            return "Error getting technical information";
-    }
     private int getTimeliness(){
         File file = new File(data + "/Timeliness.txt");
 
@@ -462,76 +286,6 @@ public class AnalysisEngine
                 e2.printStackTrace();
             }
             return timeliness;
-        }
-        else
-            return 0;
-    }
-    private String getTimelinessInformation(){
-        File file = new File(data + "/Timeliness.txt");
-
-        if (file.exists()) {
-            String timeliness = "";
-
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = br.readLine();
-                timeliness = line.substring(2,line.length());
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return timeliness;
-        }
-        else
-            return "Error getting timeliness information";
-    }
-    private double getBeta(){
-        File file = new File(data + "/Beta.txt");
-
-        if (file.exists()) {
-            double beta = 0;
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = br.readLine();
-
-                int index = line.indexOf(' ');
-                int endIndex = line.indexOf(' ', index + 1);
-
-                try {
-                    beta = Double.parseDouble(line.substring(index + 1, endIndex));
-                } catch (Exception e){}
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return beta;
-        }
-        else
-            return 0;
-    }
-    private double getMarket(){
-        File file = new File(data + "/Beta.txt");
-
-        if (file.exists()) {
-            double market = 0;
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = br.readLine();
-
-                int index = line.indexOf('(');
-
-                market = Double.parseDouble(line.substring(index + 1, line.indexOf('=') - 1));
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            return market;
         }
         else
             return 0;
@@ -783,96 +537,6 @@ public class AnalysisEngine
         }
         return decisions;
     }
-    private ArrayList<Integer> getInstitutionalBuys(){
-        ArrayList<Integer> decisions = new ArrayList<Integer>();
-        File file = new File(data + "/Institutional_Decisions.txt");
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
-
-                while (!line.contains("Buy")){
-                    line = br.readLine();
-                }
-                Scanner sc = new Scanner(line);
-                while (sc.hasNext()){
-                    if (sc.hasNextInt()){
-                        decisions.add(sc.nextInt());
-                    }
-                    else{
-                        sc.next();
-                    }
-                }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-        }
-        return decisions;
-    }
-    private ArrayList<Integer> getInstitutionalSells(){
-        ArrayList<Integer> decisions = new ArrayList<Integer>();
-        File file = new File(data + "/Institutional_Decisions.txt");
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
-
-                while (!line.contains("Sell")){
-                    line = br.readLine();
-                }
-                Scanner sc = new Scanner(line);
-                while (sc.hasNext()){
-                    if (sc.hasNextInt()){
-                        decisions.add(sc.nextInt());
-                    }
-                    else{
-                        sc.next();
-                    }
-                }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-        }
-        return decisions;
-    }
-    private ArrayList<Integer> getInstitutionalHLDs(){
-        ArrayList<Integer> decisions = new ArrayList<Integer>();
-        File file = new File(data + "/Institutional_Decisions.txt");
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = "";
-
-                while (!line.contains("Hld's")){
-                    line = br.readLine();
-                }
-                Scanner sc = new Scanner(line);
-                while (sc.hasNext()){
-                    if (sc.hasNextInt()){
-                        decisions.add(sc.nextInt());
-                    }
-                    else{
-                        sc.next();
-                    }
-                }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-        }
-        return decisions;
-    }
     private ArrayList<Integer> getYears(){
         ArrayList<Integer> years = new ArrayList<Integer>();
 
@@ -929,10 +593,7 @@ public class AnalysisEngine
                     }
                     line = temp;
                 }
-
                 Scanner sc = new Scanner(line);
-
-
                 if (test.size() > 0) {
                     values.clear();
 
@@ -1511,6 +1172,32 @@ public class AnalysisEngine
             string += currentLiability.get(i) + " ";
         }
         string += "\n";
+        for (int i = 0; i < annualRevenues.size(); i++){
+            string += annualRevenues.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < annualEarnings.size(); i++){
+            string += annualEarnings.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < annualDividends.size(); i++){
+            string += annualDividends.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < annualBookValue.size(); i++){
+            string += annualBookValue.get(i) + " ";
+        }
+        string += "\n";
+        string += companyStrength + " ";
+
+        string += "\n";
+        string += priceStability + " ";
+
+        string += "\n";
+        string += growthPersistence + " ";
+
+        string += "\n";
+        string += predictability + " ";
 
         return string;
     }
