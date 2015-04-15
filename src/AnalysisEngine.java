@@ -15,9 +15,6 @@ public class AnalysisEngine
 
     protected ArrayList<Integer> accountsPayable;
     protected ArrayList<Integer> cashAssets;
-    protected ArrayList<Integer> currentAssets;
-    protected ArrayList<Integer> currentLiability;
-    protected ArrayList<Integer> currentPositionYears;
     protected ArrayList<Integer> debtDue;
     protected ArrayList<Integer> inventory;
     protected ArrayList<Integer> receivables;
@@ -38,6 +35,9 @@ public class AnalysisEngine
     protected ArrayList<Double> capitalSpendingPerShare;
     protected ArrayList<Double> cashFlowPerShare;
     protected ArrayList<Double> commonSharesOutstanding;
+    protected ArrayList<Double> currentAssets;
+    protected ArrayList<Double> currentLiability;
+    protected ArrayList<Double> currentPositionYears;
     protected ArrayList<Double> depreciation;
     protected ArrayList<Double> dividendsDeclaredPerShare;
     protected ArrayList<Double> earningsPerShare;
@@ -152,15 +152,15 @@ public class AnalysisEngine
         returnOnTotalCapital = getDoubleValue("Return on Total Cap'l");
         returnOnShareEquity = getDoubleValue("Return on Shr. Equity");
         retainedToCommonEquity = getDoubleValue("Retained to Corn Eq");
-        allDividendsToNetProfit = getDoubleValue("All Div'ds to Net Prof");/*
-        currentPositionYears = getCurrentPosition("CURRENT POSITION");
-        cashAssets = getCurrentPosition("Cash Assets");
-        receivables = getCurrentPosition("Receivables");
-        inventory = getCurrentPosition("Inventory");
-        currentAssets = getCurrentPosition("Current Assets");
-        accountsPayable = getCurrentPosition("Payable");
-        debtDue = getCurrentPosition("Debt");
-        currentLiability = getCurrentPosition("Current Liab.");
+        allDividendsToNetProfit = getDoubleValue("All Div'ds to Net Prof");
+        currentPositionYears = getDoubleValue("CURRENT POSITION");
+        //cashAssets = getCurrentPosition("Cash Assets");
+        //receivables = getCurrentPosition("Receivables");
+        //inventory = getCurrentPosition("Inventory");
+        currentAssets = getDoubleValue("Current Assets");
+        //accountsPayable = getCurrentPosition("Payable");
+        //debtDue = getCurrentPosition("Debt");
+        currentLiability = getDoubleValue("Current Liab.");/*
         annualRevenues = getAnnualRates("Revenues");
         annualCashFlow = getAnnualRates("Cash Flow");
         annualEarnings = getAnnualRates("Earnings");
@@ -349,7 +349,10 @@ public class AnalysisEngine
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
-                safety = Integer.parseInt(line.substring(0,1));
+
+                try {
+                    safety = Integer.parseInt(line.substring(0, 1));
+                }catch(Exception e){}
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -390,7 +393,9 @@ public class AnalysisEngine
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
-                technical = Integer.parseInt(line.substring(0,1));
+                try {
+                    technical = Integer.parseInt(line.substring(0, 1));
+                }catch (Exception e){}
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -431,7 +436,10 @@ public class AnalysisEngine
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
-                timeliness = Integer.parseInt(line.substring(0,1));
+                try
+                {
+                    timeliness = Integer.parseInt(line.substring(0, 1));
+                }catch(Exception e){}
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -476,7 +484,9 @@ public class AnalysisEngine
                 int index = line.indexOf(' ');
                 int endIndex = line.indexOf(' ', index + 1);
 
-                beta = Double.parseDouble(line.substring(index + 1, endIndex));
+                try {
+                    beta = Double.parseDouble(line.substring(index + 1, endIndex));
+                } catch (Exception e){}
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -917,7 +927,12 @@ public class AnalysisEngine
                     else {
                         String s = sc.next();
                         if (s.contains("%") && s.length() > 1){
-                            values.add(Double.parseDouble(s.substring(0, s.indexOf('%'))));
+                            String st = s.substring(0, s.indexOf('%'));
+
+                            if (st.contains("(")){
+                                st = st.substring(st.indexOf('(') + 1, st.length());
+                            }
+                            values.add(Double.parseDouble(st));
                         }
                     }
                 }
@@ -1514,6 +1529,18 @@ public class AnalysisEngine
         string += "\n";
         for (int i = 0; i < allDividendsToNetProfit.size(); i++){
             string += allDividendsToNetProfit.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < currentPositionYears.size(); i++){
+            string += currentPositionYears.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < currentAssets.size(); i++){
+            string += currentAssets.get(i) + " ";
+        }
+        string += "\n";
+        for (int i = 0; i < currentLiability.size(); i++){
+            string += currentLiability.get(i) + " ";
         }
         string += "\n";
 
