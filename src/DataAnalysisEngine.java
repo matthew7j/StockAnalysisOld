@@ -4,7 +4,10 @@ public class DataAnalysisEngine
 {
     AnalysisEngine engine;
     ArrayList<ArrayList<Double>> tableValues = new ArrayList<ArrayList<Double>>();
+    ArrayList<String> tableValueStrings = new ArrayList<String>();
+
     ArrayList<Integer> changed = new ArrayList<Integer>();
+
     public DataAnalysisEngine(AnalysisEngine engine){
         this.engine = engine;
         analyze();
@@ -30,16 +33,27 @@ public class DataAnalysisEngine
 
     private void getTableValues(){
         tableValues.add(engine.revenuesPerShare);
+        tableValueStrings.add("Revenues Per Share");
         tableValues.add(engine.cashFlowPerShare);
+        tableValueStrings.add("Cash Flow Per Share");
         tableValues.add(engine.earningsPerShare);
+        tableValueStrings.add("Earnings Per Share");
         tableValues.add(engine.bookValuePerShare);
+        tableValueStrings.add("Book Value Per Share");
         tableValues.add(engine.averageAnnualPERatio);
+        tableValueStrings.add("Average Annual PE Ratio");
         tableValues.add(engine.averageAnnualDividendYield);
+        tableValueStrings.add("Average Annual Dividend Yield");
         tableValues.add(engine.revenues);
+        tableValueStrings.add("Revenues");
         tableValues.add(engine.netProfit);
+        tableValueStrings.add("Net Profit");
         tableValues.add(engine.netProfitMargin);
+        tableValueStrings.add("Net Profit Margin");
         tableValues.add(engine.longTermDebt);
+        tableValueStrings.add("Long Term Debt");
         tableValues.add(engine.returnOnShareEquity);
+        tableValueStrings.add("Return on Share Equity");
     }
 
     private boolean analyzeYears(){
@@ -74,7 +88,19 @@ public class DataAnalysisEngine
                     }
                 }
             }
+            else {
+                analyzeEmptyValues(i);
+            }
+
         }
         return returnVal;
+
+    }
+
+    private boolean analyzeEmptyValues(int index) {
+        switch (tableValueStrings.get(index)){
+
+        }
+        return false;
     }
 }
