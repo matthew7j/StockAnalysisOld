@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DataAnalysisEngine
@@ -50,23 +49,30 @@ public class DataAnalysisEngine
     }
 
     private boolean analyzeYears(){
-        ArrayList<Integer> years = engine.years;
         int previousYear = 0, currentYear;
 
-        for (int i = 0; i < years.size(); i++){
-            currentYear = years.get(i);
+        for (int i = 0; i < engine.years.size(); i++){
+            currentYear = engine.years.get(i);
             if (previousYear >= currentYear) {
-                years.remove(previousYear);
+                engine.years.remove(previousYear);
                 return true;
             }
             if (currentYear - previousYear != 1){
-                years.remove(previousYear);
+                engine.years.remove(previousYear);
                 return true;
             }
         }
         return false;
     }
     private void anaylzeTable(){
-
+        for (int i = 0; i < tableValues.size(); i++){
+            if (tableValues.get(i).size() > 1) {
+                for (int j = 0; j < tableValues.get(i).size(); j++){
+                    if (!String.valueOf(tableValues.get(i).get(j)).contains(".")){
+                        tableValues.get(i).remove(j);
+                    }
+                }
+            }
+        }
     }
 }
