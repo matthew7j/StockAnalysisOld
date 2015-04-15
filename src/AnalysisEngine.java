@@ -61,6 +61,7 @@ public class AnalysisEngine
         this.data = data;
         this.analysis();
         System.out.println(this.toString());
+        new DataAnalysisEngine(this);
     }
     private void analysis(){
         symbol = getSymbol();
