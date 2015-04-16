@@ -43,6 +43,8 @@ public class AnalysisEngine
     protected int priceStability;
     protected int safety;
     protected int timeliness;
+    protected int quarter;
+    protected int year;
 
     protected double dividendYield;
     protected double PERatio;
@@ -56,9 +58,36 @@ public class AnalysisEngine
 
     public AnalysisEngine(String data){
         this.data = data;
+        getQuarterYear();
         this.analysis();
         System.out.println(this.toString());
         new DataAnalysisEngine(this);
+    }
+    private void getQuarterYear() {
+        String s = data.substring(data.lastIndexOf("\\"));
+        try {
+            int y = Integer.parseInt(s.substring(s.lastIndexOf("_")));
+            int start = s.indexOf("_");
+            int end = s.indexOf("_", start + 1);
+            int m = Integer.parseInt(s.substring(start, end));
+
+            if (m < 4) {
+                quarter = 1;
+            }
+            else if (m < 7) {
+                quarter = 2;
+            }
+            else if (m < 10) {
+                quarter = 3;
+            }
+            else {
+                quarter = 4;
+            }
+
+            year = 2000 + y;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
     private void analysis(){
         symbol = getSymbol();
