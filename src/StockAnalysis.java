@@ -1,9 +1,11 @@
 import javax.swing.JFileChooser;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class StockAnalysis
 {
+    protected static ArrayList<AnalysisEngine> engines = new ArrayList<>();
     public static void main(String[] args)
     {
         JFileChooser chooser = new JFileChooser();
@@ -27,7 +29,8 @@ public class StockAnalysis
             if (file.isFile()) {
                 String extension = file.getName().substring(file.getName().lastIndexOf(".") + 1, file.getName().length());
                 if (extension.equals("txt")){
-                    new AnalysisEngine(file.getPath().substring(0, file.getPath().lastIndexOf('\\')));
+                    AnalysisEngine e = new AnalysisEngine(file.getPath().substring(0, file.getPath().lastIndexOf('\\')));
+                    engines.add(e);
                     break;
                 }
             } else if (file.isDirectory()) {
