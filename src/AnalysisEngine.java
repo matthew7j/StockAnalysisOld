@@ -200,7 +200,7 @@ public class AnalysisEngine
                 try {
                     peRatio = Double.parseDouble(line);
                 }catch(Exception e){
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -224,7 +224,7 @@ public class AnalysisEngine
                     dividendYield = Double.parseDouble(line);
                 }
                 catch (NumberFormatException e){
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -269,7 +269,7 @@ public class AnalysisEngine
                 {
                     timeliness = Integer.parseInt(line.substring(0, 1));
                 }catch(Exception e){
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
 
             } catch (Exception e) {
@@ -315,7 +315,7 @@ public class AnalysisEngine
 
 
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             return high;
         }
@@ -359,7 +359,7 @@ public class AnalysisEngine
                     indexStart = indexNext;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             return low;
         }
@@ -599,7 +599,7 @@ public class AnalysisEngine
                                     try {
                                         values.add(Double.parseDouble(s));
                                     } catch (Exception e) {
-                                        e.printStackTrace();
+                                        //e.printStackTrace();
                                     }
                                 }
                             }
@@ -653,7 +653,7 @@ public class AnalysisEngine
                             returnVal = line2.substring(start, end);
 
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            //e.printStackTrace();
                         }
                     }
                 }

@@ -81,6 +81,7 @@ public class DataAnalysisEngine {
             boolean zeroFound = false;
             if (tableValues.get(i).size() > 1) {
                 for (int j = tableValues.get(i).size() - 1; j > -1; j--) {
+
                     if (tableValues.get(i).get(j).equals(-0.0)) {
                         zeroFound = true;
                     } else if (zeroFound) {
@@ -102,7 +103,8 @@ public class DataAnalysisEngine {
 
     private boolean analyzeEmptyValues(int index) {
         boolean returnVal = false;
-        switch (tableValueStrings.get(index)) {
+        String val = tableValueStrings.get(index);
+        switch (val) {
             case "Average Annual PE Ratio":
                 engine.averageAnnualPERatio.clear();
                 engine.averageAnnualPERatio = getDoubleValue("Avg Anal PIE Ratio", "bottomHalf.txt");
@@ -110,15 +112,29 @@ public class DataAnalysisEngine {
                     returnVal = true;
                 }
                 tableValues.get(index).clear();
+                tableValues.remove(index);
                 tableValues.add(index, engine.averageAnnualPERatio);
-            case "Revenues per sh":
+                break;
+            case "Revenues Per Share":
                 engine.revenuesPerShare.clear();
                 engine.revenuesPerShare = getDoubleValue("Sales per sh", "bottomHalf.txt");
                 if (engine.revenuesPerShare.size() > 0) {
                     returnVal = true;
                 }
                 tableValues.get(index).clear();
+                tableValues.remove(index);
                 tableValues.add(index, engine.revenuesPerShare);
+                break;
+            case "Revenues":
+                engine.revenues.clear();
+                engine.revenues = getDoubleValue("Sales ($mill)", "bottomHalf.txt");
+                if (engine.revenues.size() > 0) {
+                    returnVal = true;
+                }
+                tableValues.get(index).clear();
+                tableValues.remove(index);
+                tableValues.add(index, engine.revenues);
+                break;
         }
         return returnVal;
     }
@@ -174,7 +190,7 @@ public class DataAnalysisEngine {
                                     try {
                                         values.add(Double.parseDouble(s));
                                     } catch (Exception e) {
-                                        e.printStackTrace();
+                                        //e.printStackTrace();
                                     }
                                 }
                             }
