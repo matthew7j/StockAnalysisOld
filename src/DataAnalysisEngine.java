@@ -31,6 +31,10 @@ public class DataAnalysisEngine {
                 System.out.println();
             }
         }
+        if (analyzePE()) {
+            System.out.println("\nNew P/E Ratio: " + engine.PERatio);
+        }
+
     }
 
     private void getTableValues() {
@@ -67,10 +71,11 @@ public class DataAnalysisEngine {
                 engine.years.remove(previousYear);
                 return true;
             }
-            if (currentYear - previousYear != 1) {
+            if (currentYear - previousYear != 1 && i != 0) {
                 engine.years.remove(previousYear);
                 return true;
             }
+            previousYear = currentYear;
         }
         return false;
     }
@@ -98,6 +103,19 @@ public class DataAnalysisEngine {
             }
 
         }
+        return returnVal;
+    }
+    private boolean analyzePE() {
+        boolean returnVal = false;
+
+        if (String.valueOf(engine.PERatio).substring(String.valueOf(engine.PERatio).indexOf('.') + 1, String.valueOf(engine.PERatio).length()).length() > 1 &&
+                String.valueOf(engine.PERatio).substring(String.valueOf(engine.PERatio).length() - 1).equals("1"))
+        {
+            String s = String.valueOf(engine.PERatio).substring(0, String.valueOf(engine.PERatio).length() - 1);
+            engine.PERatio = Double.parseDouble(s);
+            returnVal = true;
+        }
+
         return returnVal;
     }
 

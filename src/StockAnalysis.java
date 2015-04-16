@@ -28,6 +28,7 @@ public class StockAnalysis
                 String extension = file.getName().substring(file.getName().lastIndexOf(".") + 1, file.getName().length());
                 if (extension.equals("txt")){
                     new AnalysisEngine(file.getPath().substring(0, file.getPath().lastIndexOf('\\')));
+                    break;
                 }
             } else if (file.isDirectory()) {
                 find_files(file);
