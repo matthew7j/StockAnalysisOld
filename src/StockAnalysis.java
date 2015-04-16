@@ -17,6 +17,7 @@ public class StockAnalysis
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             selection = chooser.getSelectedFile();
             find_files(selection);
+            new DatabaseEngine(engines);
         } else {
             System.out.println("No Selection ");
         }
