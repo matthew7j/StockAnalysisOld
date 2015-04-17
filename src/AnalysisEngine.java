@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 public class AnalysisEngine
 {
+    protected ArrayList<ArrayList<Double>> yearValues;
+
     protected String data;
 
     protected int[] projectionYears;
