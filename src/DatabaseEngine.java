@@ -17,7 +17,7 @@ public class DatabaseEngine
             checkTableData(e);
         }
         catch (Exception ex) {
-
+            ex.printStackTrace();
         }
 
     }
@@ -26,8 +26,8 @@ public class DatabaseEngine
         Connection conn = null;
         ResultSet rs = null;
         Statement s = null;
-        int quarter = 0;
-        boolean newQ = true;
+        int quarter;
+        boolean newQ = false;
         try {
             conn = createConnection();
             s = conn.createStatement();
@@ -72,11 +72,11 @@ public class DatabaseEngine
             closeConnection(rs, s, conn);
         }
     }
+
     private void addCurrentYearData(int year, AnalysisEngine e) {
         int index = (e.years.size() - 1) - e.years.indexOf(year);
 
         Connection conn = null;
-        ResultSet rs = null;
         Statement s = null;
         String sql;
 
@@ -131,7 +131,7 @@ public class DatabaseEngine
         }
         finally
         {
-            closeConnection(rs, s, conn);
+            closeConnection(null, s, conn);
         }
     }
 
@@ -140,7 +140,6 @@ public class DatabaseEngine
         int currentAssetYear = 0, currentAssetIndex = 0;
 
         Connection conn = null;
-        ResultSet rs = null;
         Statement s = null;
         String sql;
 
@@ -178,7 +177,7 @@ public class DatabaseEngine
         }
         finally
         {
-            closeConnection(rs, s, conn);
+            closeConnection(null, s, conn);
         }
     }
 
@@ -193,7 +192,6 @@ public class DatabaseEngine
     }
     private void insertYear(int year) {
         Connection conn = null;
-        ResultSet rs = null;
         Statement s = null;
         try {
             conn = createConnection();
@@ -208,7 +206,7 @@ public class DatabaseEngine
         }
         finally
         {
-            closeConnection(rs, s, conn);
+            closeConnection(null, s, conn);
         }
     }
     private ArrayList<Integer> getYears() {
