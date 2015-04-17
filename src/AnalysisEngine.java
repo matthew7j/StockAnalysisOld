@@ -66,10 +66,10 @@ public class AnalysisEngine
     private void getQuarterYear() {
         String s = data.substring(data.lastIndexOf("\\"));
         try {
-            int y = Integer.parseInt(s.substring(s.lastIndexOf("_")));
+            int y = Integer.parseInt(s.substring(s.lastIndexOf("_") + 1));
             int start = s.indexOf("_");
             int end = s.indexOf("_", start + 1);
-            int m = Integer.parseInt(s.substring(start, end));
+            int m = Integer.parseInt(s.substring(start + 1, end));
 
             if (m < 4) {
                 quarter = 1;
