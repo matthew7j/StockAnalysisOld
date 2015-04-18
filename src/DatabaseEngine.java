@@ -32,8 +32,8 @@ public class DatabaseEngine
             conn = createConnection();
             s = conn.createStatement();
 
-            String sql = "SELECT Stocks.Years.YearValue " +
-                         "FROM Stocks.Years AS Y CROSS JOIN Stocks.Data AS D " +
+            String sql = "SELECT Y.YearValue " +
+                         "FROM Stocks.StockYear AS Y CROSS JOIN Stocks.YearData AS D " +
                          "WHERE Y.ID = D.YearID;";
             rs = s.executeQuery(sql);
 
@@ -42,8 +42,8 @@ public class DatabaseEngine
                 if (year != e.year)
                     years.add(Integer.parseInt(rs.getString("YearValue")));
                 else {
-                    sql = "SELECT Stocks.Quarters.Number " +
-                            "FROM Stocks.Quarters AS Q CROSS JOIN Stocks.Data AS D " +
+                    sql = "SELECT Stocks.StockQuarter.Number " +
+                            "FROM Stocks.StockQuarter AS Q CROSS JOIN Stocks.Data AS D " +
                             "WHERE Q.QuarterID = D.QuarterID;";
                     rs = s.executeQuery(sql);
                     while (rs.next()) {
@@ -94,18 +94,17 @@ public class DatabaseEngine
             }
 
             sql =   "INSERT INTO Stocks.QuarterData (" +
-                    "YearID, QuarterID, StockID, Price, P/E, Dividend Yield, Timeliness, Safety, HighProj, HighProjGain, " +
-                    "HighProjAnnualReturn, LowProj, " +
-                    "InsiderBuys, InsiderSells, Revenues Per Share, Cash Flow Per Share, Earnings Per Share, " +
-                    "Book Value Per Share, Average Annual P/E Ratio, Average Annual Dividend Yield, Revenues, Net Profit, " +
-                    "Net Profit Margin, Long-term Debt, Return on Share Equity, Total Debt, Market Cap, Current Assets, " +
-                    "Current Liabilities, Annual Revenues Past 10, Annual Revenues Past 5, Annual Revenues Future 5, " +
-                    "Annual Earnings Past 10, Annual Earnings Past 5, Annual Earnings Future 5,  Annual Dividends Past 10, " +
-                    "Annual Dividends Past 5, Annual Dividends Future 5, Annual Book Value Past 10, Annual Book Value Past 5, " +
-                    "Annual BOok Value Future 5, Strength, Price Stability, Growth Persistence, Earnings Predictability) " +
+                    "YearID, QuarterID, StockID, Price, PERatio, DividendYield, Timeliness, Safety, HighProj, LowProj, " +
+                    "InsiderBuys, InsiderSells, Revenues PerShare, CashFlowPerShare, Earnings PerShare, " +
+                    "BookValuePerShare, AverageAnnualPERatio, AverageAnnualDividendYield, Revenues, NetProfit, " +
+                    "NetProfitMargin, LongTermDebt, ReturnOnShareEquity, TotalDebt, MarketCap, CurrentAssets, " +
+                    "CurrentLiabilities, AnnualRevenuesPast10, AnnualRevenuesPast5, AnnualRevenues Future5, " +
+                    "AnnualEarningsPast10, AnnualEarningsPast5, AnnualEarningsFuture5,  AnnualDividends Past10, " +
+                    "AnnualDividendsPast5, AnnualDividendsFuture5, AnnualBookValuePast10, AnnualBookValuePast5, " +
+                    "AnnualBookValueFuture 5, Strength, PriceStability, GrowthPersistence, EarningsPredictability) " +
                     "VALUES (" +
-                    "SELECT Stocks.Years.ID FROM Stocks.Years WHERE Stocks.Years.YearValue = " + year + ", " +
-                    "SELECT Stocks.Quarters.ID FROM Stocks.Quarters WHERE Stocks.Quarters.QuarterValue = " + e.quarter + ", " +
+                    "SELECT Stocks.StockYear.ID FROM Stocks.StockYear WHERE Stocks.StockYear.YearValue = " + year + ", " +
+                    "SELECT Stocks.StockQuarter.ID FROM Stocks.StockQuarter WHERE Stocks.StockQuarter.QuarterValue = " + e.quarter + ", " +
                     "SELECT Stocks.Stock.ID FROM Stocks.Stock WHERE Stocks.Stock.Symbol = " + e.symbol + ", " +
                     "" + e.recentPrice + ", " + e.PERatio + ", " + e.dividendYield + ", " + e.timeliness + ", " + e.safety + ", " +
                     "" + e.highProjections[0] + ", " + e.highProjections[1] + ", " + e.highProjections[2] + ", " + e.lowProjections[0] + ", " +
@@ -148,16 +147,16 @@ public class DatabaseEngine
             s = conn.createStatement();
 
             sql =   "INSERT INTO Stocks.YearData (" +
-                    "YearID, QuarterID, StockID, High, Low, Revenues Per Share, Cash Flow Per Share, Earnings Per Share, " +
-                    "Book Value Per Share, Average Annual P/E Ratio, Average Annual Dividend Yield, Revenues, Net Profit, " +
-                    "Net Profit Margin, Long-term Debt, Return on Share Equity";
+                    "YearID, QuarterID, StockID, HighProj, LowProj, RevenuesPerShare, CashFlowPerShare, EarningsPerShare, " +
+                    "BookValuePerShare, AverageAnnualPERatio, AverageAnnualDividendYield, Revenues, NetProfit, " +
+                    "NetProfitMargin, LongTermDebt, ReturnOnShareEquity";
             if (currentAssetYear == year) {
-                sql += ", Current Assets, Current Liability ";
+                sql += ", CurrentAssets, CurrentLiability ";
             }
 
             sql +=  "VALUES (" +
-                    "SELECT Stocks.Years.ID FROM Stocks.Years WHERE Stocks.Years.YearValue = " + year + ", " +
-                    "SELECT Stocks.Quarters.ID FROM Stocks.Quarters WHERE Stocks.Quarters.QuarterValue = " + 0 + ", " +
+                    "SELECT Stocks.StockYear.ID FROM Stocks.StockYear WHERE Stocks.StockYear.YearValue = " + year + ", " +
+                    "SELECT Stocks.StockQuarter.ID FROM Stocks.StockQuarter WHERE Stocks.StockQuarter.QuarterValue = " + 0 + ", " +
                     "SELECT Stocks.Stock.ID FROM Stocks.Stock WHERE Stocks.Stock.Symbol = " + e.symbol + ", " +
                     "" + e.yearHighs.get(e.yearHighs.size() - index) + ", " + e.yearLows.get(e.yearLows.size() - index) + ", " +
                     "" + e.revenuesPerShare.get(e.revenuesPerShare.size() - index) + ", " + e.cashFlowPerShare.get(e.cashFlowPerShare.size() - index) + ", " +
