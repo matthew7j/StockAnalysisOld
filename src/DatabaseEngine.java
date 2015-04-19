@@ -154,6 +154,8 @@ public class DatabaseEngine
                 sql += ", CurrentAssets, CurrentLiability ";
             }
 
+
+
             sql +=  "VALUES (" +
                     "SELECT Stocks.StockYear.ID FROM Stocks.StockYear WHERE Stocks.StockYear.YearValue = " + year + ", " +
                     "SELECT Stocks.StockQuarter.ID FROM Stocks.StockQuarter WHERE Stocks.StockQuarter.QuarterValue = " + 0 + ", " +

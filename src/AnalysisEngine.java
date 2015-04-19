@@ -106,24 +106,26 @@ public class AnalysisEngine
         insiderOptions = getInsiderOptionsDecisions();
         insiderSells = getInsiderSellDecisions();
         years = getYears();
-        revenuesPerShare = getDoubleValue("Revenues per sh", "BottomHalf.txt");
-        cashFlowPerShare = getDoubleValue("Cash Flow", "BottomHalf.txt");
-        earningsPerShare = getDoubleValue("Earnings per sh", "BottomHalf.txt");
-        bookValuePerShare = getDoubleValue("Book Value per sh", "BottomHalf.txt");
-        averageAnnualPERatio = getDoubleValue("Avg Ann'l PIE Ratio", "BottomHalf.txt");
-        averageAnnualDividendYield = getDoubleValue("Avg Ann'l Div'd Yield", "BottomHalf.txt");
-        revenues = getDoubleValue("Revenues ($mill)", "BottomHalf.txt");
-        netProfit = getDoubleValue("Net Profit", "BottomHalf.txt");
-        netProfitMargin = getDoubleValue("Net Profit Margin", "BottomHalf.txt");
-        longTermDebt = getDoubleValue("Long-Term Debt", "BottomHalf.txt");
-        returnOnShareEquity = getDoubleValue("Return on Shr. Equity", "BottomHalf.txt");
-        currentPositionYears = getDoubleValue("CURRENT POSITION", "CurrentPosition.txt");
-        currentAssets = getDoubleValue("Current Assets", "CurrentPosition.txt");
-        currentLiability = getDoubleValue("Current Liab.", "CurrentPosition.txt");
-        annualRevenues = getDoubleValue("Revenues", "AnnualRates.txt");
-        annualEarnings = getDoubleValue("Earnings", "AnnualRates.txt");
-        annualDividends = getDoubleValue("Dividends", "AnnualRates.txt");
-        annualBookValue = getDoubleValue("Book Value", "AnnualRates.txt");
+        revenuesPerShare = getDoubleValue("Revenues per sh", "BottomHalf.txt", true);
+        cashFlowPerShare = getDoubleValue("Cash Flow", "BottomHalf.txt", true);
+        earningsPerShare = getDoubleValue("Earnings per sh", "BottomHalf.txt", true);
+        bookValuePerShare = getDoubleValue("Book Value per sh", "BottomHalf.txt", true);
+        averageAnnualPERatio = getDoubleValue("Avg Ann'l PIE Ratio", "BottomHalf.txt", true);
+        averageAnnualDividendYield = getDoubleValue("Avg Ann'l Div'd Yield", "BottomHalf.txt", true);
+        revenues = getDoubleValue("Revenues ($mill)", "BottomHalf.txt", true);
+        netProfit = getDoubleValue("Net Profit", "BottomHalf.txt", true);
+        netProfitMargin = getDoubleValue("Net Profit Margin", "BottomHalf.txt", true);
+        longTermDebt = getDoubleValue("Long-Term Debt", "BottomHalf.txt", true);
+        returnOnShareEquity = getDoubleValue("Return on Shr. Equity", "BottomHalf.txt", true);
+        currentPositionYears = getDoubleValue("CURRENT POSITION", "CurrentPosition.txt", true);
+        currentAssets = getDoubleValue("Current Assets", "CurrentPosition.txt", true);
+        currentLiability = getDoubleValue("Current Liab.", "CurrentPosition.txt", true);
+        annualRevenues = getDoubleValue("Revenues", "AnnualRates.txt", false);
+        annualEarnings = getDoubleValue("Earnings", "AnnualRates.txt", false);
+        annualDividends = getDoubleValue("Dividends", "AnnualRates.txt", false);
+        annualBookValue = getDoubleValue("Book Value", "AnnualRates.txt", false);
+        yearHighs = getDoubleValue("High:", "Hi_Lo.txt", true);
+        yearLows = getDoubleValue("Low:", "Hi_Lo.txt", true);
         totalDebt = getTotalDebt();
         marketCap = getMarketCap();
         companyStrength = getStrength();
@@ -576,7 +578,7 @@ public class AnalysisEngine
         }
         return years;
     }
-    private ArrayList<Double> getDoubleValue(String value, String filename){
+    private ArrayList<Double> getDoubleValue(String value, String filename, boolean fill){
         ArrayList<Double> values = new ArrayList<>();
         ArrayList<Double> test = new ArrayList<>();
         File file = new File(data + "/" + filename);
@@ -646,10 +648,15 @@ public class AnalysisEngine
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return values;
+
         }
-        else
-            return values;
+
+        if (fill) {
+            while (values.size() < years.size()) {
+                values.add(0, -0.0);
+            }
+        }
+        return values;
     }
 
     private String getTotalDebt()
