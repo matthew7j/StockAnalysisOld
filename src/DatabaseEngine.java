@@ -42,8 +42,8 @@ public class DatabaseEngine
                 if (year != e.year)
                     years.add(Integer.parseInt(rs.getString("YearValue")));
                 else {
-                    sql = "SELECT Stocks.StockQuarter.Number " +
-                            "FROM Stocks.StockQuarter AS Q CROSS JOIN Stocks.Data AS D " +
+                    sql = "SELECT Stocks.StockQuarter.QuarterNumber " +
+                            "FROM Stocks.StockQuarter AS Q CROSS JOIN Stocks.QuarterData AS D " +
                             "WHERE Q.QuarterID = D.QuarterID;";
                     rs = s.executeQuery(sql);
                     while (rs.next()) {
