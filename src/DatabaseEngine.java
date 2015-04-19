@@ -139,6 +139,7 @@ public class DatabaseEngine
         int currentAssetYear = 0, currentAssetIndex = 0;
 
         Connection conn = null;
+        ResultSet rs = null;
         Statement s = null;
         String sql;
 
@@ -146,20 +147,42 @@ public class DatabaseEngine
             conn = createConnection();
             s = conn.createStatement();
 
-            sql =   "INSERT INTO Stocks.YearData (" +
-                    "YearID, QuarterID, StockID, HighProj, LowProj, RevenuesPerShare, CashFlowPerShare, EarningsPerShare, " +
-                    "BookValuePerShare, AverageAnnualPERatio, AverageAnnualDividendYield, Revenues, NetProfit, " +
-                    "NetProfitMargin, LongTermDebt, ReturnOnShareEquity";
-            if (currentAssetYear == year) {
-                sql += ", CurrentAssets, CurrentLiability ";
+            int yearID = 0;
+            int stockID = 0;
+            String stockSQL = "SELECT Stocks.Stock.ID FROM Stocks.Stock " +
+                    "WHERE Stocks.Stock.StockSymbol = '" + e.symbol + "';";
+
+            try {
+                rs = s.executeQuery(stockSQL);
+                rs.next();
+                stockID = Integer.parseInt(rs.getString("ID"));
+
+            } catch (Exception ex) {
+                if (rs == null)
+                    addStock(e.symbol, e.stockName);
             }
 
 
+            String yearSQL = "SELECT Stocks.StockYear.ID FROM Stocks.StockYear " +
+                    "WHERE Stocks.StockYear.YearValue = " + year + ";";
 
-            sql +=  "VALUES (" +
-                    "SELECT Stocks.StockYear.ID FROM Stocks.StockYear WHERE Stocks.StockYear.YearValue = " + year + ", " +
-                    "SELECT Stocks.StockQuarter.ID FROM Stocks.StockQuarter WHERE Stocks.StockQuarter.QuarterValue = " + 0 + ", " +
-                    "SELECT Stocks.Stock.ID FROM Stocks.Stock WHERE Stocks.Stock.Symbol = " + e.symbol + ", " +
+            try {
+                rs = s.executeQuery(yearSQL);
+                rs.next();
+                yearID = Integer.parseInt(rs.getString("ID"));
+            } catch (Exception ex) {
+
+            }
+
+
+            sql =   "INSERT INTO Stocks.YearData (" +
+                    "YearID, StockID, HighProj, LowProj, RevenuesPerShare, CashFlowPerShare, EarningsPerShare, " +
+                    "BookValuePerShare, AverageAnnualPERatio, AverageAnnualDividendYield, Revenues, NetProfit, " +
+                    "NetProfitMargin, LongTermDebt, ReturnOnShareEquity, CurrentAssets, CurrentLiability";
+
+            sql +=  ") VALUES (" +
+                    "" + yearID + ", " +
+                    "" + stockID + ", " +
                     "" + e.yearHighs.get(e.yearHighs.size() - index) + ", " + e.yearLows.get(e.yearLows.size() - index) + ", " +
                     "" + e.revenuesPerShare.get(e.revenuesPerShare.size() - index) + ", " + e.cashFlowPerShare.get(e.cashFlowPerShare.size() - index) + ", " +
                     "" + e.earningsPerShare.get(e.earningsPerShare.size() - index) + ", " + e.bookValuePerShare.get(e.bookValuePerShare.size() - index) + ", " +
@@ -170,6 +193,10 @@ public class DatabaseEngine
             if (currentAssetYear == year) {
                 sql += ", " + e.currentAssets.get(currentAssetIndex) + ", " + e.currentLiability.get(currentAssetIndex);
             }
+            else
+            {
+                sql += ", -0.0, -0.0";
+            }
             sql +=  ");";
             s.executeUpdate(sql);
         }
@@ -178,7 +205,7 @@ public class DatabaseEngine
         }
         finally
         {
-            closeConnection(null, s, conn);
+            closeConnection(rs, s, conn);
         }
     }
 
@@ -189,6 +216,25 @@ public class DatabaseEngine
             if (!currentYears.contains(e.years.get(i))) {
                 insertYear(e.years.get(i));
             }
+        }
+    }
+    private void addStock(String symbol, String stockName) {
+        Connection conn = null;
+        Statement s = null;
+        try {
+            conn = createConnection();
+            s = conn.createStatement();
+
+            String sql ="INSERT INTO Stocks.Stock (Stocks.Stock.StockName, Stocks.Stock.StockSymbol) " +
+                    "VALUES ('" + stockName + "', '" + symbol + "');";
+            s.executeUpdate(sql);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        finally
+        {
+            closeConnection(null, s, conn);
         }
     }
     private void insertYear(int year) {

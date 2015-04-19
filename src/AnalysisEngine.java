@@ -7,6 +7,7 @@ public class AnalysisEngine
     protected ArrayList<ArrayList<Double>> yearValues;
 
     protected String data;
+    protected String stockName;
 
     protected int[] projectionYears;
 
@@ -132,8 +133,25 @@ public class AnalysisEngine
         priceStability = getStats("Stability");
         growthPersistence = getStats("Persistence");
         predictability = getStats("Predictability");
-        yearHighs = getHighs();
-        yearLows = getLows();
+        stockName = getStockName();
+    }
+
+    private String getStockName() {
+        File file = new File(data + "/Symbol.txt");
+        String name = "";
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = br.readLine();
+
+                Scanner s = new Scanner(line);
+
+                name = s.next();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return name;
     }
 
     private ArrayList<Double> checkForFile(String filename, String value){
@@ -816,54 +834,6 @@ public class AnalysisEngine
         }
         else
             return returnVal;
-    }
-    private ArrayList<Double> getHighs()
-    {
-        File file = new File(data + "/hi_lo.txt");
-        ArrayList<Double> highs = new ArrayList<>();
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line = br.readLine();
-                Scanner sc = new Scanner(line);
-
-                while(sc.hasNextDouble()){
-                    highs.add(sc.nextDouble());
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return highs;
-        }
-        else
-            return highs;
-    }
-    private ArrayList<Double> getLows()
-    {
-        File file = new File(data + "/hi_lo.txt");
-        ArrayList<Double> lows = new ArrayList<>();
-
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-                String line;
-                br.readLine();
-                line = br.readLine();
-                Scanner sc = new Scanner(line);
-
-                while(sc.hasNextDouble()){
-                    lows.add(sc.nextDouble());
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return lows;
-        }
-        else
-            return lows;
     }
 
     public String toString(){
