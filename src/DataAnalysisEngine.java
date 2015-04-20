@@ -34,6 +34,7 @@ public class DataAnalysisEngine {
         if (analyzePE()) {
             System.out.println("\nNew P/E Ratio: " + engine.PERatio);
         }
+        analyzeAnnualValues();
 
     }
 
@@ -117,6 +118,60 @@ public class DataAnalysisEngine {
         }
 
         return returnVal;
+    }
+
+    private void analyzeAnnualValues() {
+        if (engine.annualRevenues.size() != 3) {
+            engine.annualRevenues = fixAnnualValues(engine.annualRevenues);
+        }
+        if (engine.annualEarnings.size() != 3) {
+            engine.annualEarnings = fixAnnualValues(engine.annualEarnings);
+        }
+        if (engine.annualBookValue.size() != 3) {
+            engine.annualBookValue = fixAnnualValues(engine.annualBookValue);
+        }
+        if (engine.annualDividends.size() != 3) {
+            engine.annualDividends = fixAnnualValues(engine.annualDividends);
+        }
+    }
+
+    private ArrayList<Double> fixAnnualValues(ArrayList<Double> list) {
+        if (list.size() == 0) {
+            list.add(0.0);
+            list.add(0.0);
+            list.add(0.0);
+        }
+        if (list.size() == 1) {
+            if (list.get(0) == 0.0) {
+                list.add(0.0);
+                list.add(0.0);
+            }
+            else {
+                list.add(0, 0.0);
+                list.add(1, 0.0);
+            }
+        }
+        else if (list.size() == 2) {
+            if (list.get(0) == 0.0) {
+                if (list.get(1) == 0.0) {
+                    list.add(0.0);
+                }
+                else {
+                    list.add(0, 0.0);
+                }
+            }
+            else {
+                if (list.get(1) != 0.0) {
+                    list.add(0.0);
+                }
+            }
+        }
+        else if (list.size() == 4) {
+            if (list.get(0) == 0.0 && list.get(1) == 0.0) {
+                list.remove(0);
+            }
+        }
+        return list;
     }
 
     private boolean analyzeEmptyValues(int index) {
