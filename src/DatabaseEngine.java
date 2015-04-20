@@ -13,7 +13,12 @@ public class DatabaseEngine
     }
     private void enterData(AnalysisEngine e) {
         try {
+            /* Checks for current years in the table and adds a year value
+            to the table if the year value does not exist
+             */
             checkYears(e);
+
+
             checkTableData(e);
         }
         catch (Exception ex) {
@@ -42,9 +47,9 @@ public class DatabaseEngine
                 if (year != e.year)
                     years.add(Integer.parseInt(rs.getString("YearValue")));
                 else {
-                    sql = "SELECT Stocks.StockQuarter.QuarterNumber " +
+                    sql = "SELECT Q.QuarterNumber " +
                             "FROM Stocks.StockQuarter AS Q CROSS JOIN Stocks.QuarterData AS D " +
-                            "WHERE Q.QuarterID = D.QuarterID;";
+                            "WHERE Q.ID = D.QuarterID;";
                     rs = s.executeQuery(sql);
                     while (rs.next()) {
                         quarter = Integer.parseInt(rs.getString("Number"));
@@ -60,7 +65,12 @@ public class DatabaseEngine
             for (int i = 0; i < e.years.size(); i++)
             {
                 if (!years.contains(e.years.get(i))) {
-                    addOldYearData(e.years.get(i), e);
+                    if (e.quarter == 4 && i == e.years.size() - 1)
+                    {
+
+                    }else {
+                        addOldYearData(e.years.get(i), e);
+                    }
                 }
             }
         }
@@ -74,10 +84,11 @@ public class DatabaseEngine
     }
 
     private void addCurrentYearData(int year, AnalysisEngine e) {
-        int index = (e.years.size() - 1) - e.years.indexOf(year);
+        int index = e.years.indexOf(year);
 
         Connection conn = null;
         Statement s = null;
+        ResultSet rs = null;
         String sql;
 
         try {
@@ -93,6 +104,45 @@ public class DatabaseEngine
                 sells += e.insiderSells.get(i);
             }
 
+            int yearID = 0;
+            int quarterID = 0;
+            int stockID = 0;
+            String stockSQL = "SELECT Stocks.Stock.ID FROM Stocks.Stock " +
+                    "WHERE Stocks.Stock.StockSymbol = '" + e.symbol + "';";
+
+            try {
+                rs = s.executeQuery(stockSQL);
+                rs.next();
+                stockID = Integer.parseInt(rs.getString("ID"));
+
+            } catch (Exception ex) {
+                if (rs == null)
+                    addStock(e.symbol, e.stockName);
+            }
+            String quarterSQL = "SELECT Stocks.StockQuarter.ID FROM Stocks.StockQuarter " +
+                    "WHERE Stocks.StockQuarter.QuarterNumber = '" + e.quarter + "';";
+
+            try {
+                rs = s.executeQuery(quarterSQL);
+                rs.next();
+                quarterID = Integer.parseInt(rs.getString("ID"));
+
+            } catch (Exception ex) {
+
+            }
+
+
+            String yearSQL = "SELECT Stocks.StockYear.ID FROM Stocks.StockYear " +
+                    "WHERE Stocks.StockYear.YearValue = " + year + ";";
+
+            try {
+                rs = s.executeQuery(yearSQL);
+                rs.next();
+                yearID = Integer.parseInt(rs.getString("ID"));
+            } catch (Exception ex) {
+
+            }
+
             sql =   "INSERT INTO Stocks.QuarterData (" +
                     "YearID, QuarterID, StockID, Price, PERatio, DividendYield, Timeliness, Safety, HighProj, LowProj, " +
                     "InsiderBuys, InsiderSells, Revenues PerShare, CashFlowPerShare, Earnings PerShare, " +
@@ -103,9 +153,7 @@ public class DatabaseEngine
                     "AnnualDividendsPast5, AnnualDividendsFuture5, AnnualBookValuePast10, AnnualBookValuePast5, " +
                     "AnnualBookValueFuture 5, Strength, PriceStability, GrowthPersistence, EarningsPredictability) " +
                     "VALUES (" +
-                    "SELECT Stocks.StockYear.ID FROM Stocks.StockYear WHERE Stocks.StockYear.YearValue = " + year + ", " +
-                    "SELECT Stocks.StockQuarter.ID FROM Stocks.StockQuarter WHERE Stocks.StockQuarter.QuarterValue = " + e.quarter + ", " +
-                    "SELECT Stocks.Stock.ID FROM Stocks.Stock WHERE Stocks.Stock.Symbol = " + e.symbol + ", " +
+                    "" + yearID + ", " + quarterID + ", " + stockID + ", " +
                     "" + e.recentPrice + ", " + e.PERatio + ", " + e.dividendYield + ", " + e.timeliness + ", " + e.safety + ", " +
                     "" + e.highProjections[0] + ", " + e.highProjections[1] + ", " + e.highProjections[2] + ", " + e.lowProjections[0] + ", " +
                     "" + e.lowProjections[1] + ", " + e.lowProjections[2] + ", " + buys + ", " + sells + ", " +
@@ -130,12 +178,12 @@ public class DatabaseEngine
         }
         finally
         {
-            closeConnection(null, s, conn);
+            closeConnection(rs, s, conn);
         }
     }
 
     private void addOldYearData(int year, AnalysisEngine e) {
-        int index = (e.years.size() - 1) - e.years.indexOf(year);
+        int index = e.years.indexOf(year);
         int currentAssetYear = 0, currentAssetIndex = 0;
 
         Connection conn = null;
@@ -183,13 +231,13 @@ public class DatabaseEngine
             sql +=  ") VALUES (" +
                     "" + yearID + ", " +
                     "" + stockID + ", " +
-                    "" + e.yearHighs.get(e.yearHighs.size() - index) + ", " + e.yearLows.get(e.yearLows.size() - index) + ", " +
-                    "" + e.revenuesPerShare.get(e.revenuesPerShare.size() - index) + ", " + e.cashFlowPerShare.get(e.cashFlowPerShare.size() - index) + ", " +
-                    "" + e.earningsPerShare.get(e.earningsPerShare.size() - index) + ", " + e.bookValuePerShare.get(e.bookValuePerShare.size() - index) + ", " +
-                    "" + e.averageAnnualPERatio.get(e.averageAnnualPERatio.size() - index) + ", " + e.averageAnnualDividendYield.get(e.averageAnnualDividendYield.size() - index) + ", " +
-                    "" + e.revenues.get(e.revenues.size() - index) + ", " + e.netProfit.get(e.netProfit.size() - index) + ", " +
-                    "" + e.netProfitMargin.get(e.netProfitMargin.size() - index) + ", " + e.longTermDebt.get(e.longTermDebt.size() - index) + ", " +
-                    "" + e.returnOnShareEquity.get(e.returnOnShareEquity.size() - index);
+                    "" + e.yearHighs.get(index) + ", " + e.yearLows.get(index) + ", " +
+                    "" + e.revenuesPerShare.get(index) + ", " + e.cashFlowPerShare.get(index) + ", " +
+                    "" + e.earningsPerShare.get(index) + ", " + e.bookValuePerShare.get(index) + ", " +
+                    "" + e.averageAnnualPERatio.get(index) + ", " + e.averageAnnualDividendYield.get(index) + ", " +
+                    "" + e.revenues.get(index) + ", " + e.netProfit.get(index) + ", " +
+                    "" + e.netProfitMargin.get(index) + ", " + e.longTermDebt.get(index) + ", " +
+                    "" + e.returnOnShareEquity.get(index);
             if (currentAssetYear == year) {
                 sql += ", " + e.currentAssets.get(currentAssetIndex) + ", " + e.currentLiability.get(currentAssetIndex);
             }

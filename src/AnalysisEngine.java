@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class AnalysisEngine
@@ -133,8 +134,20 @@ public class AnalysisEngine
         priceStability = getStats("Stability");
         growthPersistence = getStats("Persistence");
         predictability = getStats("Predictability");
-        stockName = getStockName();
+        stockName = getStockName();/*
+        Collections.reverse(revenuesPerShare);
+        Collections.reverse(cashFlowPerShare);
+        Collections.reverse(earningsPerShare);
+        Collections.reverse(bookValuePerShare);
+        Collections.reverse(averageAnnualPERatio);
+        Collections.reverse(averageAnnualDividendYield);
+        Collections.reverse(revenues);
+        Collections.reverse(netProfit);
+        Collections.reverse(netProfitMargin);
+        Collections.reverse(longTermDebt);
+        Collections.reverse(returnOnShareEquity);*/
     }
+
 
     private String getStockName() {
         File file = new File(data + "/Symbol.txt");
