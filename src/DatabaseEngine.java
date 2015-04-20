@@ -37,9 +37,12 @@ public class DatabaseEngine
             conn = createConnection();
             s = conn.createStatement();
 
+            int ID = getStockID(e);
+
             String sql = "SELECT Y.YearValue " +
-                         "FROM Stocks.StockYear AS Y CROSS JOIN Stocks.YearData AS D " +
-                         "WHERE Y.ID = D.YearID;";
+                         "FROM Stocks.StockYear AS Y CROSS JOIN Stocks.YearData AS D JOIN Stocks.Stock AS S " +
+                         "WHERE Y.ID = D.YearID " +
+                         "AND D.StockID = " + ID + ";";
             rs = s.executeQuery(sql);
 
             while (rs.next()) {
@@ -52,7 +55,7 @@ public class DatabaseEngine
                             "WHERE Q.ID = D.QuarterID;";
                     rs = s.executeQuery(sql);
                     while (rs.next()) {
-                        quarter = Integer.parseInt(rs.getString("Number"));
+                        quarter = Integer.parseInt(rs.getString("QuarterNumber"));
                         if (quarter == e.quarter) {
                             newQ = true;
                         }
@@ -82,6 +85,34 @@ public class DatabaseEngine
             closeConnection(rs, s, conn);
         }
     }
+
+    private int getStockID (AnalysisEngine e) {
+        int stockID = 0;
+        String stockSQL = "SELECT Stocks.Stock.ID FROM Stocks.Stock " +
+                "WHERE Stocks.Stock.StockSymbol = '" + e.symbol + "';";
+
+        Connection conn = null;
+        Statement s = null;
+        ResultSet rs = null;
+
+        try {
+            conn = createConnection();
+            s = conn.createStatement();
+
+            rs = s.executeQuery(stockSQL);
+            if (rs.next())
+                stockID = Integer.parseInt(rs.getString("ID"));
+
+        } catch (Exception ex) {
+
+        }
+        finally
+        {
+            closeConnection(rs, s, conn);
+        }
+        return stockID;
+    }
+
 
     private void addCurrentYearData(int year, AnalysisEngine e) {
         int index = e.years.indexOf(year);
@@ -145,30 +176,29 @@ public class DatabaseEngine
 
             sql =   "INSERT INTO Stocks.QuarterData (" +
                     "YearID, QuarterID, StockID, Price, PERatio, DividendYield, Timeliness, Safety, HighProj, LowProj, " +
-                    "InsiderBuys, InsiderSells, Revenues PerShare, CashFlowPerShare, Earnings PerShare, " +
+                    "InsiderBuys, InsiderSells, RevenuesPerShare, CashFlowPerShare, EarningsPerShare, " +
                     "BookValuePerShare, AverageAnnualPERatio, AverageAnnualDividendYield, Revenues, NetProfit, " +
                     "NetProfitMargin, LongTermDebt, ReturnOnShareEquity, TotalDebt, MarketCap, CurrentAssets, " +
-                    "CurrentLiabilities, AnnualRevenuesPast10, AnnualRevenuesPast5, AnnualRevenues Future5, " +
-                    "AnnualEarningsPast10, AnnualEarningsPast5, AnnualEarningsFuture5,  AnnualDividends Past10, " +
+                    "CurrentLiability, AnnualRevenuesPast10, AnnualRevenuesPast5, AnnualRevenuesFuture5, " +
+                    "AnnualEarningsPast10, AnnualEarningsPast5, AnnualEarningsFuture5,  AnnualDividendsPast10, " +
                     "AnnualDividendsPast5, AnnualDividendsFuture5, AnnualBookValuePast10, AnnualBookValuePast5, " +
-                    "AnnualBookValueFuture 5, Strength, PriceStability, GrowthPersistence, EarningsPredictability) " +
+                    "AnnualBookValueFuture5, Strength, PriceStability, GrowthPersistence, EarningsPredictability) " +
                     "VALUES (" +
                     "" + yearID + ", " + quarterID + ", " + stockID + ", " +
                     "" + e.recentPrice + ", " + e.PERatio + ", " + e.dividendYield + ", " + e.timeliness + ", " + e.safety + ", " +
-                    "" + e.highProjections[0] + ", " + e.highProjections[1] + ", " + e.highProjections[2] + ", " + e.lowProjections[0] + ", " +
-                    "" + e.lowProjections[1] + ", " + e.lowProjections[2] + ", " + buys + ", " + sells + ", " +
-                    "" + e.revenuesPerShare.get(e.revenuesPerShare.size() - index) + ", " + e.cashFlowPerShare.get(e.cashFlowPerShare.size() - index) + ", " +
-                    "" + e.earningsPerShare.get(e.earningsPerShare.size() - index) + ", " + e.bookValuePerShare.get(e.bookValuePerShare.size() - index) + ", " +
-                    "" + e.averageAnnualPERatio.get(e.averageAnnualPERatio.size() - index) + ", " + e.averageAnnualDividendYield.get(e.averageAnnualDividendYield.size() - index) + ", " +
-                    "" + e.revenues.get(e.revenues.size() - index) + ", " + e.netProfit.get(e.netProfit.size() - index) + ", " +
-                    "" + e.netProfitMargin.get(e.netProfitMargin.size() - index) + ", " + e.longTermDebt.get(e.longTermDebt.size() - index) + ", " +
-                    "" + e.returnOnShareEquity.get(e.returnOnShareEquity.size() - index) + ", " + e.totalDebt + ", " + e.marketCap + ", " +
+                    "" + e.highProjections[0] + ", " + e.lowProjections[0] + ", " + buys + ", " + sells + ", " +
+                    "" + e.revenuesPerShare.get(index) + ", " + e.cashFlowPerShare.get(index) + ", " +
+                    "" + e.earningsPerShare.get(index) + ", " + e.bookValuePerShare.get(index) + ", " +
+                    "" + e.averageAnnualPERatio.get(index) + ", " + e.averageAnnualDividendYield.get(index) + ", " +
+                    "" + e.revenues.get(index) + ", " + e.netProfit.get(index) + ", " +
+                    "" + e.netProfitMargin.get(index) + ", " + e.longTermDebt.get(index) + ", " +
+                    "" + e.returnOnShareEquity.get(index) + ", '" + e.totalDebt + "', '" + e.marketCap + "', " +
                     "" + e.currentAssets.get(e.currentAssets.size() - 1) + ", " + e.currentLiability.get(e.currentLiability.size() - 1) + ", " +
                     "" + e.annualRevenues.get(0) + ", " + e.annualRevenues.get(1) + ", " + e.annualRevenues.get(2) + ", " +
                     "" + e.annualEarnings.get(0) + ", " + e.annualEarnings.get(1) + ", " + e.annualEarnings.get(2) + ", " +
                     "" + e.annualDividends.get(0) + ", " + e.annualDividends.get(1) + ", " + e.annualDividends.get(2) + ", " +
                     "" + e.annualBookValue.get(0) + ", " + e.annualBookValue.get(1) + ", " + e.annualBookValue.get(2) + ", " +
-                    "" + e.companyStrength + ", " + e.priceStability + ", " + e.growthPersistence + ", " + e.predictability +
+                    "'" + e.companyStrength + "', " + e.priceStability + ", " + e.growthPersistence + ", " + e.predictability +
             ");";
 
             s.executeUpdate(sql);
@@ -206,7 +236,7 @@ public class DatabaseEngine
                 stockID = Integer.parseInt(rs.getString("ID"));
 
             } catch (Exception ex) {
-                if (rs == null)
+                if (rs == null || stockID == 0)
                     addStock(e.symbol, e.stockName);
             }
 
@@ -221,7 +251,6 @@ public class DatabaseEngine
             } catch (Exception ex) {
 
             }
-
 
             sql =   "INSERT INTO Stocks.YearData (" +
                     "YearID, StockID, HighProj, LowProj, RevenuesPerShare, CashFlowPerShare, EarningsPerShare, " +
