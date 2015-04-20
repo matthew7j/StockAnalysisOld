@@ -39,7 +39,7 @@ public class DatabaseEngine
 
             int ID = getStockID(e);
 
-            String sql = "SELECT Y.YearValue " +
+            String sql = "SELECT DISTINCT Y.YearValue " +
                          "FROM Stocks.StockYear AS Y CROSS JOIN Stocks.YearData AS D JOIN Stocks.Stock AS S " +
                          "WHERE Y.ID = D.YearID " +
                          "AND D.StockID = " + ID + ";";
