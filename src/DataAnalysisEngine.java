@@ -65,20 +65,23 @@ public class DataAnalysisEngine {
 
     private boolean analyzeYears() {
         int previousYear = 0, currentYear;
+        boolean returnVal = false;
 
         for (int i = 0; i < engine.years.size(); i++) {
             currentYear = engine.years.get(i);
             if (previousYear >= currentYear) {
-                engine.years.remove(previousYear);
-                return true;
+                engine.years.add(i, previousYear + 1);
+                engine.years.remove(i+1);
+                returnVal = true;
             }
-            if (currentYear - previousYear != 1 && i != 0) {
-                engine.years.remove(previousYear);
-                return true;
+            else if (currentYear - previousYear != 1 && i != 0) {
+                engine.years.add(i, previousYear + 1);
+                engine.years.remove(i+1);
+                returnVal = true;
             }
             previousYear = currentYear;
         }
-        return false;
+        return returnVal;
     }
 
     private boolean analyzeTable() {

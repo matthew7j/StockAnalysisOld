@@ -215,6 +215,7 @@ public class DatabaseEngine
     private void addOldYearData(int year, AnalysisEngine e) {
         int index = e.years.indexOf(year);
         int currentAssetYear = 0, currentAssetIndex = 0;
+        int stockID = 0;
 
         Connection conn = null;
         ResultSet rs = null;
@@ -225,8 +226,6 @@ public class DatabaseEngine
             conn = createConnection();
             s = conn.createStatement();
 
-            int yearID = 0;
-            int stockID = 0;
             String stockSQL = "SELECT Stocks.Stock.ID FROM Stocks.Stock " +
                     "WHERE Stocks.Stock.StockSymbol = '" + e.symbol + "';";
 
@@ -239,10 +238,23 @@ public class DatabaseEngine
                     addStock(e.symbol, e.stockName);
 
             } catch (Exception ex) {
-                if (rs == null)
-                    addStock(e.symbol, e.stockName);
+                addStock(e.symbol, e.stockName);
+                stockID = getStockID(e);
             }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        finally
+        {
+            closeConnection(rs, s, conn);
+        }
 
+        try {
+            conn = createConnection();
+            s = conn.createStatement();
+
+            int yearID = 0;
 
             String yearSQL = "SELECT Stocks.StockYear.ID FROM Stocks.StockYear " +
                     "WHERE Stocks.StockYear.YearValue = " + year + ";";
