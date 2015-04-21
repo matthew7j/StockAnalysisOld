@@ -211,6 +211,16 @@ public class DataAnalysisEngine {
                 tableValues.remove(index);
                 tableValues.add(index, engine.revenues);
                 break;
+            case "Average Annual Dividend Yield":
+                engine.averageAnnualDividendYield.clear();
+                engine.averageAnnualDividendYield = getDoubleValue("Avg Ann'l Died Yield", "bottomHalf.txt");
+                if (engine.averageAnnualDividendYield.size() > 0) {
+                    returnVal = true;
+                }
+                tableValues.get(index).clear();
+                tableValues.remove(index);
+                tableValues.add(index, engine.averageAnnualDividendYield);
+                break;
         }
         return returnVal;
     }

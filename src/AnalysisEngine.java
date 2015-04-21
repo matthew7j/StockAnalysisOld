@@ -674,10 +674,13 @@ public class AnalysisEngine
                                     }
                                 }
                             }
-                            if (s.equals("-") || s.equals("--")){
+                            if (s.equals("-") || s.equals("--") || s.equals("- -")){
                                 values.add(-0.00);
                             }
                             if (s.equals("NFM")){
+                                values.add(-0.000);
+                            }
+                            if (s.equals("NMF")){
                                 values.add(-0.000);
                             }
                         }
