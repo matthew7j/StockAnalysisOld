@@ -134,18 +134,7 @@ public class AnalysisEngine
         priceStability = getStats("Stability");
         growthPersistence = getStats("Persistence");
         predictability = getStats("Predictability");
-        stockName = getStockName();/*
-        Collections.reverse(revenuesPerShare);
-        Collections.reverse(cashFlowPerShare);
-        Collections.reverse(earningsPerShare);
-        Collections.reverse(bookValuePerShare);
-        Collections.reverse(averageAnnualPERatio);
-        Collections.reverse(averageAnnualDividendYield);
-        Collections.reverse(revenues);
-        Collections.reverse(netProfit);
-        Collections.reverse(netProfitMargin);
-        Collections.reverse(longTermDebt);
-        Collections.reverse(returnOnShareEquity);*/
+        stockName = getStockName();
     }
 
 
@@ -600,8 +589,26 @@ public class AnalysisEngine
                         if (year != 1)
                             years.add(year);
                     }
-                    else
-                        sc.next();
+                    else {
+                        String testString = sc.next();
+                        String num = "";
+                        for (int i = 0; i < testString.length(); i++) {
+                            if (Character.isDigit(testString.charAt(i))) {
+                                num += testString.charAt(i);
+                            }
+                        }
+                        if (num.length() == 4) {
+                            int newYear = Integer.parseInt(num);
+                            if (newYear > 9999){
+                                int test = newYear / 1000;
+                                if (test == 12 || test == 11){
+                                    newYear = Integer.parseInt(Integer.toString(newYear).substring(1));
+                                }
+                            }
+                            if (newYear != 1)
+                                years.add(newYear);
+                        }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

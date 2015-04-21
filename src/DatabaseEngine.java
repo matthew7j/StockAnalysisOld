@@ -52,7 +52,7 @@ public class DatabaseEngine
                 else {
                     sql = "SELECT Q.QuarterNumber " +
                             "FROM Stocks.StockQuarter AS Q CROSS JOIN Stocks.QuarterData AS D " +
-                            "WHERE Q.ID = D.QuarterID;";
+                            "WHERE Q.ID = D.QuarterID AND D.StockID = " + ID + ";";
                     rs = s.executeQuery(sql);
                     while (rs.next()) {
                         quarter = Integer.parseInt(rs.getString("QuarterNumber"));
@@ -235,8 +235,11 @@ public class DatabaseEngine
                 rs.next();
                 stockID = Integer.parseInt(rs.getString("ID"));
 
+                if (stockID == 0)
+                    addStock(e.symbol, e.stockName);
+
             } catch (Exception ex) {
-                if (rs == null || stockID == 0)
+                if (rs == null)
                     addStock(e.symbol, e.stockName);
             }
 
