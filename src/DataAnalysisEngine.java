@@ -39,10 +39,39 @@ public class DataAnalysisEngine {
     }
 
     private void confirmValues() {
-        double[][] table = new double[20][20];
+        double[][] table = new double[20][];
 
         for (int i = 0; i < 16; i++) {
             addValuesToTable("Year" + i, table, i);
+        }
+        String[] keep = new String[20];
+
+        for (int i = 0; i < 20; i++) {
+            addValuesToKeep(keep);
+        }
+    }
+
+    private void addValuesToKeep(String[] keep) {
+        File file = new File(engine.data + "/dataColumn.txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = br.readLine();
+
+                Scanner sc = new Scanner(line);
+
+                for (int i = 0; i < line.length(); i++) {
+                    String d = sc.next();
+
+                    if (tableValueStrings.contains(d)) {
+                        keep[i] = d;
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -58,15 +87,13 @@ public class DataAnalysisEngine {
                 Scanner sc = new Scanner(line);
 
                 for (int i = 0; i < line.length(); i++) {
-                    while (sc.hasNext()) {
-                        if (sc.hasNextDouble()) {
-                            String d = sc.next();
-                            table[i][column] = Double.valueOf(d);
-                        }
-                        else {
-                            sc.next();
-                            table[i][column] = 0.0;
-                        }
+                    if (sc.hasNextDouble()) {
+                        String d = sc.next();
+                        table[i][column] = Double.valueOf(d);
+                    }
+                    else {
+                        sc.next();
+                        table[i][column] = 0.0;
                     }
                 }
 
