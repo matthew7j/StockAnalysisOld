@@ -35,7 +35,45 @@ public class DataAnalysisEngine {
             System.out.println("\nNew P/E Ratio: " + engine.PERatio);
         }
         analyzeAnnualValues();
+        confirmValues();
+    }
 
+    private void confirmValues() {
+        double[][] table = new double[20][20];
+
+        for (int i = 0; i < 16; i++) {
+            addValuesToTable("Year" + i, table, i);
+        }
+    }
+
+    private void addValuesToTable(String s, double[][] table, int column) {
+
+        File file = new File(engine.data + "/" + s + ".txt");
+
+        if (file.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
+                String line = br.readLine();
+
+                Scanner sc = new Scanner(line);
+
+                for (int i = 0; i < line.length(); i++) {
+                    while (sc.hasNext()) {
+                        if (sc.hasNextDouble()) {
+                            String d = sc.next();
+                            table[i][column] = Double.valueOf(d);
+                        }
+                        else {
+                            sc.next();
+                            table[i][column] = 0.0;
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void getTableValues() {
