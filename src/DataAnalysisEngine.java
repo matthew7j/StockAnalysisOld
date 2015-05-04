@@ -39,19 +39,27 @@ public class DataAnalysisEngine {
     }
 
     private void confirmValues() {
-        double[][] table = new double[20][];
-        Object[][] values = new Object[20][];
+        double[][] table = new double[25][25];
+        Object[][] values = new Object[20][22];
 
-        for (int i = 0; i < 16; i++) {
-            addValuesToTable("Year" + i, table, i);
+        for (int i = 1; i < 19; i++) {
+            addValuesToTable("Year" + i + "Vertical", table, i - 1);
         }
+
+        for (int i = 0; i < 18; i++) {
+            for (int j = 0; j < 22; j++) {
+                System.out.print(table[i][j] + " ");
+            }
+            System.out.println();
+        }
+
         for (int i = 0; i < tableValueStrings.size(); i++) {
             finalizeValues(tableValueStrings.get(i), values, table);
         }
     }
 
     private void finalizeValues(String s, Object[][] values, double[][] table) {
-        File file = new File(engine.data + "/DataValues.txt");
+        File file = new File(engine.data + "/YearValues.txt");
         int current = 0;
 
         if (file.exists()) {
@@ -61,9 +69,8 @@ public class DataAnalysisEngine {
 
                 Scanner sc = new Scanner(line);
 
-                for (int i = 0; i < line.length(); i++) {
-                    String d = sc.next();
-                    if (s.equals(d)){
+                while (line != null) {
+                    if (line.contains(s)){
                         for (int j = 0; j < table[i].length; j++) {
                             values[current][j] = table[i][j];
                         }
@@ -80,23 +87,35 @@ public class DataAnalysisEngine {
     private void addValuesToTable(String s, double[][] table, int column) {
 
         File file = new File(engine.data + "/" + s + ".txt");
+        int row = 0;
 
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
 
-                Scanner sc = new Scanner(line);
-
-                for (int i = 0; i < line.length(); i++) {
+                while (line != null) {
+                    Scanner sc = new Scanner(line);
                     if (sc.hasNextDouble()) {
                         String d = sc.next();
-                        table[i][column] = Double.valueOf(d);
+                        table[row++][column] = Double.valueOf(d);
                     }
                     else {
-                        sc.next();
-                        table[i][column] = 0.0;
+                        String d = sc.next();
+                        if (d.contains("%") && d.length() > 1) {
+                            String st = d.substring(0, d.indexOf('%'));
+
+                            if (st.contains("(")) {
+                                st = st.substring(st.indexOf('(') + 1, st.length());
+                            }
+                            table[row++][column] = Double.valueOf(st);
+                        }
+                        else {
+                            table[row++][column] = 0.0;
+                            break;
+                        }
                     }
+                    line = br.readLine();
                 }
 
             } catch (Exception e) {
