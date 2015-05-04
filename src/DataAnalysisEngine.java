@@ -40,19 +40,19 @@ public class DataAnalysisEngine {
 
     private void confirmValues() {
         double[][] table = new double[20][];
+        Object[][] values = new Object[20][];
 
         for (int i = 0; i < 16; i++) {
             addValuesToTable("Year" + i, table, i);
         }
-        String[] keep = new String[20];
-
-        for (int i = 0; i < 20; i++) {
-            addValuesToKeep(keep);
+        for (int i = 0; i < tableValueStrings.size(); i++) {
+            finalizeValues(tableValueStrings.get(i), values, table);
         }
     }
 
-    private void addValuesToKeep(String[] keep) {
-        File file = new File(engine.data + "/dataColumn.txt");
+    private void finalizeValues(String s, Object[][] values, double[][] table) {
+        File file = new File(engine.data + "/DataValues.txt");
+        int current = 0;
 
         if (file.exists()) {
             try {
@@ -63,9 +63,11 @@ public class DataAnalysisEngine {
 
                 for (int i = 0; i < line.length(); i++) {
                     String d = sc.next();
-
-                    if (tableValueStrings.contains(d)) {
-                        keep[i] = d;
+                    if (s.equals(d)){
+                        for (int j = 0; j < table[i].length; j++) {
+                            values[current][j] = table[i][j];
+                        }
+                        values[current++][table[i].length] = d;
                     }
                 }
 
