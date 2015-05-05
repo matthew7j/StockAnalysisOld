@@ -65,8 +65,23 @@ public class AnalysisEngine
         getQuarterYear();
         this.analysis();
         System.out.println(this.toString());
+        gather();
         new DataAnalysisEngine(this);
     }
+
+    private void gather() {
+        yearValues.add(revenuesPerShare);
+        yearValues.add(cashFlowPerShare);
+        yearValues.add(earningsPerShare);
+        yearValues.add(averageAnnualPERatio);
+        yearValues.add(averageAnnualDividendYield);
+        yearValues.add(longTermDebt);
+        yearValues.add(netProfit);
+        yearValues.add(netProfitMargin);
+        yearValues.add(revenues);
+        yearValues.add(returnOnShareEquity);
+    }
+
     private void getQuarterYear() {
         String s = data.substring(data.lastIndexOf("\\"));
         try {

@@ -95,8 +95,8 @@ public class DataAnalysisEngine {
         }
         addValuesToTable("YearFuture", table, 18);
 
-        for (int i = 0; i < 19; i++) {
-            for (int j = 0; j < 22; j++) {
+        for (int i = 0; i < table.length; i++) {
+            for (int j = 0; j < table[i].length; j++) {
                 System.out.print(table[i][j] + " ");
             }
             System.out.println();
@@ -104,6 +104,37 @@ public class DataAnalysisEngine {
 
         for (int i = 0; i < differentStrings.size(); i++) {
             finalizeValues(differentStrings.get(i), values, table);
+        }
+
+        for (int i = 0; i < values.length; i++) {
+            for (int j = 0; j < values[i].length; j++) {
+                System.out.print(values[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        compareValues(values);
+    }
+
+    private void compareValues(Object[][] values) {
+        for (int i = 0; i < engine.yearValues.size(); i++) {
+            int row = 0, column = 0;
+            for (int j = 0; j < engine.yearValues.get(i).size(); j++) {
+                String s = values[row][column++].toString();
+                double d = 0.0;
+                try {
+                    d = Double.parseDouble(s);
+                }
+                catch (Exception e) {
+
+                }
+                if (engine.yearValues.get(i).get(j).compareTo(d) == 0) {
+
+                }
+                else {
+                    break;
+                }
+            }
         }
     }
 
@@ -174,8 +205,24 @@ public class DataAnalysisEngine {
                             table[row++][column] = Double.valueOf(st);
                         }
                         else {
-                            table[row++][column] = 0.0;
-                            break;
+                            if (line.contains("d")){
+                                line = line.replaceAll("d", "-");
+                                if (!line.contains(",")) {
+                                    try {
+                                        table[row++][column] = Double.valueOf(line);
+                                    } catch (Exception e) {
+                                        //e.printStackTrace();
+                                    }
+                                }
+                            }
+                            else if (line.contains("NFM") || line.contains("NMF") || line.equals("-") || line.equals("--") ||
+                                    line.equals("- -")){
+                                table[row++][column] = 0.0;
+                            }
+                            else {
+                                table[row++][column] = 0.0;
+                                break;
+                            }
                         }
                     }
                     line = br.readLine();
