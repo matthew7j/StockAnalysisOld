@@ -122,6 +122,7 @@ public class DataAnalysisEngine {
             for (int j = 0; j < engine.yearValues.get(i).size(); j++) {
                 String s = values[row][column++].toString();
                 double d = 0.0;
+                int consecutive = 0;
                 try {
                     d = Double.parseDouble(s);
                 }
@@ -129,10 +130,15 @@ public class DataAnalysisEngine {
 
                 }
                 if (engine.yearValues.get(i).get(j).compareTo(d) == 0) {
-
+                    consecutive++;
                 }
                 else {
-                    break;
+                    if (consecutive > 2) {
+
+                    }
+                    else {
+                        break;
+                    }
                 }
             }
         }
