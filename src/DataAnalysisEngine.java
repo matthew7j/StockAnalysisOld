@@ -5,13 +5,48 @@ import java.util.Scanner;
 public class DataAnalysisEngine {
     AnalysisEngine engine;
     ArrayList<ArrayList<Double>> tableValues = new ArrayList<ArrayList<Double>>();
+
+    ArrayList<ArrayList<String>> differentStrings = new ArrayList<>();
+
     ArrayList<String> tableValueStrings = new ArrayList<String>();
 
     ArrayList<Integer> changed = new ArrayList<Integer>();
 
     public DataAnalysisEngine(AnalysisEngine engine) {
         this.engine = engine;
+        fillStrings();
         analyze();
+    }
+
+    private void fillStrings() {
+        ArrayList<String> revsPerShare = new ArrayList<>();
+        revsPerShare.add("Revenues per sh");
+        ArrayList<String> cashFlowPerShare = new ArrayList<>();
+        cashFlowPerShare.add("\"Cash Flow\" per sh");
+        ArrayList<String> earningsPerShare = new ArrayList<>();
+        earningsPerShare.add("Earnings per sh");
+        ArrayList<String> averageAnnualPERatio = new ArrayList<>();
+        averageAnnualPERatio.add("Avg Ann’l P/E Ratio");
+        ArrayList<String> averageAnnualDividendYield = new ArrayList<>();
+        averageAnnualDividendYield.add("Avg Ann’l Div’d Yield");
+        ArrayList<String> revenues = new ArrayList<>();
+        revenues.add("Revenues ($mill)");
+        ArrayList<String> netProfit = new ArrayList<>();
+        netProfit.add("Net Profit ($mill)");
+        ArrayList<String> netProfitMargin = new ArrayList<>();
+        netProfitMargin.add("Net Profit Margin");
+        ArrayList<String> longTermDebt = new ArrayList<>();
+        longTermDebt.add("Long-Term Debt");
+
+        differentStrings.add(revsPerShare);
+        differentStrings.add(cashFlowPerShare);
+        differentStrings.add(earningsPerShare);
+        differentStrings.add(averageAnnualPERatio);
+        differentStrings.add(averageAnnualDividendYield);
+        differentStrings.add(revenues);
+        differentStrings.add(netProfit);
+        differentStrings.add(netProfitMargin);
+        differentStrings.add(longTermDebt);
     }
 
     private void analyze() {
@@ -53,29 +88,34 @@ public class DataAnalysisEngine {
             System.out.println();
         }
 
-        for (int i = 0; i < tableValueStrings.size(); i++) {
-            finalizeValues(tableValueStrings.get(i), values, table);
+        for (int i = 0; i < differentStrings.size(); i++) {
+            finalizeValues(differentStrings.get(i), values, table);
         }
     }
 
-    private void finalizeValues(String s, Object[][] values, double[][] table) {
+    private void finalizeValues(ArrayList<String> s, Object[][] values, double[][] table) {
         File file = new File(engine.data + "/YearValues.txt");
-        int current = 0;
+        int currentLine = 0;
+        int currentRow = 0, currentColumn = 0;
 
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
                 String line = br.readLine();
 
-                Scanner sc = new Scanner(line);
-
                 while (line != null) {
-                    if (line.contains(s)){
-                        for (int j = 0; j < table[i].length; j++) {
-                            values[current][j] = table[i][j];
+                    for (int i = 0; i < s.size(); i++) {
+                        if (line.contains(s.get(i))) {
+                            for (int j = 0; j < table[currentLine].length; j++) {
+                                values[currentRow][currentColumn++] = table[currentLine][j];
+                            }
+                            break;
                         }
-                        values[current++][table[i].length] = d;
                     }
+                    currentLine++;
+                    currentRow++;
+                    currentColumn = 0;
+                    line = br.readLine();
                 }
 
             } catch (Exception e) {
