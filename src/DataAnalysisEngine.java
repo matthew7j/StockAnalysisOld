@@ -4,13 +4,13 @@ import java.util.Scanner;
 
 public class DataAnalysisEngine {
     AnalysisEngine engine;
-    ArrayList<ArrayList<Double>> tableValues = new ArrayList<ArrayList<Double>>();
+    ArrayList<ArrayList<Double>> tableValues = new ArrayList();
 
     ArrayList<ArrayList<String>> differentStrings = new ArrayList<>();
 
-    ArrayList<String> tableValueStrings = new ArrayList<String>();
+    ArrayList<String> tableValueStrings = new ArrayList();
 
-    ArrayList<Integer> changed = new ArrayList<Integer>();
+    ArrayList<Integer> changed = new ArrayList();
 
     public DataAnalysisEngine(AnalysisEngine engine) {
         this.engine = engine;
@@ -20,23 +20,35 @@ public class DataAnalysisEngine {
 
     private void fillStrings() {
         ArrayList<String> revsPerShare = new ArrayList<>();
+        revsPerShare.add("Revenues Per Share");
         revsPerShare.add("Revenues per sh");
         ArrayList<String> cashFlowPerShare = new ArrayList<>();
+        cashFlowPerShare.add("Cash Flow Per Share");
         cashFlowPerShare.add("\"Cash Flow\" per sh");
         ArrayList<String> earningsPerShare = new ArrayList<>();
+        earningsPerShare.add("Earnings Per Share");
         earningsPerShare.add("Earnings per sh");
         ArrayList<String> averageAnnualPERatio = new ArrayList<>();
+        averageAnnualPERatio.add("Average Annual PE Ratio");
         averageAnnualPERatio.add("Avg Ann’l P/E Ratio");
         ArrayList<String> averageAnnualDividendYield = new ArrayList<>();
+        averageAnnualDividendYield.add("Average Annual Dividend Yield");
         averageAnnualDividendYield.add("Avg Ann’l Div’d Yield");
         ArrayList<String> revenues = new ArrayList<>();
+        revenues.add("Revenues");
         revenues.add("Revenues ($mill)");
         ArrayList<String> netProfit = new ArrayList<>();
+        netProfit.add("Net Profit");
         netProfit.add("Net Profit ($mill)");
         ArrayList<String> netProfitMargin = new ArrayList<>();
         netProfitMargin.add("Net Profit Margin");
+        netProfitMargin.add("Net Profit Margin");
         ArrayList<String> longTermDebt = new ArrayList<>();
+        longTermDebt.add("Long Term Debt");
         longTermDebt.add("Long-Term Debt");
+        ArrayList<String> returnOnShareEquity = new ArrayList<>();
+        returnOnShareEquity.add("Return on Share Equity");
+        returnOnShareEquity.add("Return on Shr. Equity");
 
         differentStrings.add(revsPerShare);
         differentStrings.add(cashFlowPerShare);
@@ -47,6 +59,7 @@ public class DataAnalysisEngine {
         differentStrings.add(netProfit);
         differentStrings.add(netProfitMargin);
         differentStrings.add(longTermDebt);
+        differentStrings.add(returnOnShareEquity);
     }
 
     private void analyze() {
@@ -74,14 +87,15 @@ public class DataAnalysisEngine {
     }
 
     private void confirmValues() {
-        double[][] table = new double[25][25];
-        Object[][] values = new Object[20][22];
+        double[][] table = new double[30][30];
+        Object[][] values = new Object[30][30];
 
         for (int i = 1; i < 19; i++) {
             addValuesToTable("Year" + i + "Vertical", table, i - 1);
         }
+        addValuesToTable("YearFuture", table, 18);
 
-        for (int i = 0; i < 18; i++) {
+        for (int i = 0; i < 19; i++) {
             for (int j = 0; j < 22; j++) {
                 System.out.print(table[i][j] + " ");
             }
@@ -94,6 +108,14 @@ public class DataAnalysisEngine {
     }
 
     private void finalizeValues(ArrayList<String> s, Object[][] values, double[][] table) {
+
+        /*
+        *   The purpose of this method is to search the table array and add the necessary rows into the values array.
+        *   Necessary rows are determined by if they are the data for the rows that are relevant for the analysis.
+        *   This method also adds the Year Value to the end of each row to be able to easily identify which row holds
+        *   which data.
+        */
+
         File file = new File(engine.data + "/YearValues.txt");
         int currentLine = 0;
         int currentRow = 0, currentColumn = 0;
@@ -109,6 +131,7 @@ public class DataAnalysisEngine {
                             for (int j = 0; j < table[currentLine].length; j++) {
                                 values[currentRow][currentColumn++] = table[currentLine][j];
                             }
+                            values[currentRow][currentColumn++] = s.get(0);
                             break;
                         }
                     }
