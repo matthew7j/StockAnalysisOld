@@ -30,9 +30,11 @@ public class DataAnalysisEngine {
         earningsPerShare.add("Earnings per sh");
         ArrayList<String> averageAnnualPERatio = new ArrayList<>();
         averageAnnualPERatio.add("Average Annual PE Ratio");
+        averageAnnualPERatio.add("Avg Ann'l PIE Ratio");
         averageAnnualPERatio.add("Avg Ann’l P/E Ratio");
         ArrayList<String> averageAnnualDividendYield = new ArrayList<>();
         averageAnnualDividendYield.add("Average Annual Dividend Yield");
+        averageAnnualDividendYield.add("Avg Ann'l Div'd Yield");
         averageAnnualDividendYield.add("Avg Ann’l Div’d Yield");
         ArrayList<String> revenues = new ArrayList<>();
         revenues.add("Revenues");
@@ -88,7 +90,7 @@ public class DataAnalysisEngine {
 
     private void confirmValues() {
         double[][] table = new double[30][30];
-        Object[][] values = new Object[30][30];
+        Object[][] values = new Object[31][31];
 
         for (int i = 1; i < 19; i++) {
             addValuesToTable("Year" + i + "Vertical", table, i - 1);
@@ -101,9 +103,11 @@ public class DataAnalysisEngine {
             }
             System.out.println();
         }
-
+        int currentRow = 0;
         for (int i = 0; i < differentStrings.size(); i++) {
-            finalizeValues(differentStrings.get(i), values, table);
+
+            finalizeValues(differentStrings.get(i), values, table, currentRow);
+            currentRow++;
         }
 
         for (int i = 0; i < values.length; i++) {
@@ -144,7 +148,7 @@ public class DataAnalysisEngine {
         }
     }
 
-    private void finalizeValues(ArrayList<String> s, Object[][] values, double[][] table) {
+    private void finalizeValues(ArrayList<String> s, Object[][] values, double[][] table, int currentRow) {
 
         /*
         *   The purpose of this method is to search the table array and add the necessary rows into the values array.
@@ -155,7 +159,7 @@ public class DataAnalysisEngine {
 
         File file = new File(engine.data + "/YearValues.txt");
         int currentLine = 0;
-        int currentRow = 0, currentColumn = 0;
+        int currentColumn = 0;
 
         if (file.exists()) {
             try {
@@ -168,12 +172,14 @@ public class DataAnalysisEngine {
                             for (int j = 0; j < table[currentLine].length; j++) {
                                 values[currentRow][currentColumn++] = table[currentLine][j];
                             }
+                            if (currentColumn > 30) {
+                                System.out.println("WTF");
+                            }
                             values[currentRow][currentColumn++] = s.get(0);
                             break;
                         }
                     }
                     currentLine++;
-                    currentRow++;
                     currentColumn = 0;
                     line = br.readLine();
                 }

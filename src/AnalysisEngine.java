@@ -70,6 +70,7 @@ public class AnalysisEngine
     }
 
     private void gather() {
+        yearValues = new ArrayList();
         yearValues.add(revenuesPerShare);
         yearValues.add(cashFlowPerShare);
         yearValues.add(earningsPerShare);
